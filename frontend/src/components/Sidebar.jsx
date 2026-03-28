@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   Search, Activity, Shield, UserX, Clock,
-  ChevronRight, Zap, AlertTriangle, Users
+  ChevronRight, Zap, AlertTriangle, Users, PauseCircle
 } from 'lucide-react'
 
 const SPECIALTY_COLORS = {
@@ -44,10 +44,11 @@ function avatarColor(id) {
 
 // Demo scenario quick-loads
 const DEMO_SCENARIOS = [
-  { id: 'hcp-003', label: 'Digitally Engaged',   icon: Zap,           color: 'text-emerald-400', desc: 'High digital signals' },
-  { id: 'hcp-006', label: 'Low Engagement',       icon: Clock,         color: 'text-amber-400',   desc: 'Churned — 7 months' },
-  { id: 'hcp-002', label: 'F2F Preference',        icon: Users,         color: 'text-blue-400',    desc: 'Ignores email' },
-  { id: 'hcp-010', label: 'Compliance Blackout',  icon: Shield,        color: 'text-red-400',     desc: 'AE reported' },
+  { id: 'hcp-003', label: 'Digitally Engaged',    icon: Zap,         color: 'text-emerald-400', desc: 'High signals — invite to webinar' },
+  { id: 'hcp-006', label: 'Low Engagement',        icon: Clock,       color: 'text-amber-400',   desc: 'Churned 7 months — soft re-engage' },
+  { id: 'hcp-002', label: 'F2F Preference',         icon: Users,       color: 'text-blue-400',    desc: 'Ignores email — book in-person' },
+  { id: 'hcp-011', label: 'Wait & Monitor',         icon: PauseCircle, color: 'text-yellow-400',  desc: 'Too soon — hold outreach' },
+  { id: 'hcp-010', label: 'Compliance Block',       icon: Shield,      color: 'text-red-400',     desc: 'AE reported — do not contact' },
 ]
 
 export default function Sidebar({ hcps, selectedId, onSelect }) {

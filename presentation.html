@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HCP Engagement Copilot — Interview Presentation</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0B1D3A;
+    --blue:   #2563EB;
+    --indigo: #4F46E5;
+    --teal:   #0D9488;
+    --green:  #16A34A;
+    --amber:  #D97706;
+    --red:    #DC2626;
+    --slate:  #64748B;
+    --light:  #F8FAFC;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--navy);
+    color: #fff;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Slide Container ── */
+  .deck { width: 100vw; height: 100vh; position: relative; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    padding: 56px 72px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .35s ease;
+    overflow: hidden;
+  }
+  .slide.active { opacity: 1; pointer-events: all; }
+
+  /* ── Backgrounds ── */
+  .bg-navy   { background: #0B1D3A; }
+  .bg-dark   { background: #0f2447; }
+  .bg-light  { background: #F1F5F9; color: #0f172a; }
+  .bg-indigo { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); }
+  .bg-teal   { background: linear-gradient(135deg, #042f2e 0%, #134e4a 100%); }
+  .bg-title  { background: radial-gradient(ellipse at 30% 50%, #1e3a70 0%, #0B1D3A 65%); }
+
+  /* ── Navigation ── */
+  .nav {
+    position: fixed; bottom: 28px; right: 36px;
+    display: flex; align-items: center; gap: 12px; z-index: 100;
+  }
+  .nav-btn {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,.25);
+    background: rgba(255,255,255,.07);
+    color: #fff; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,.18); }
+  .slide-counter {
+    font-size: 12px; color: rgba(255,255,255,.45);
+    min-width: 52px; text-align: center;
+  }
+
+  /* ── Progress Bar ── */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--blue); z-index: 100; transition: width .35s ease; }
+
+  /* ── Typography ── */
+  .eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: #60A5FA; margin-bottom: 14px;
+  }
+  .eyebrow.teal { color: #2DD4BF; }
+  .eyebrow.amber { color: #FCD34D; }
+  .eyebrow.green { color: #4ADE80; }
+  .eyebrow.red { color: #F87171; }
+
+  h1 { font-size: 52px; font-weight: 800; line-height: 1.08; letter-spacing: -.02em; }
+  h2 { font-size: 36px; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
+  h3 { font-size: 22px; font-weight: 700; line-height: 1.25; }
+  h4 { font-size: 15px; font-weight: 700; }
+  p  { font-size: 15px; line-height: 1.65; }
+  .large { font-size: 19px; line-height: 1.55; }
+  .muted { opacity: .55; }
+  .text-blue  { color: #60A5FA; }
+  .text-teal  { color: #2DD4BF; }
+  .text-amber { color: #FCD34D; }
+  .text-green { color: #4ADE80; }
+  .text-red   { color: #F87171; }
+
+  /* ── Layout Helpers ── */
+  .row   { display: flex; gap: 24px; }
+  .col   { display: flex; flex-direction: column; gap: 12px; }
+  .flex1 { flex: 1; }
+  .mt8  { margin-top: 8px; }
+  .mt16 { margin-top: 16px; }
+  .mt24 { margin-top: 24px; }
+  .mt32 { margin-top: 32px; }
+  .mt40 { margin-top: 40px; }
+
+  /* ── Cards ── */
+  .card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 20px 22px;
+  }
+  .card.light {
+    background: #fff; border: 1px solid #E2E8F0; color: #0f172a;
+  }
+  .card.blue-border { border-color: rgba(96,165,250,.4); background: rgba(37,99,235,.12); }
+  .card.teal-border { border-color: rgba(45,212,191,.35); background: rgba(13,148,136,.12); }
+  .card.amber-border { border-color: rgba(252,211,77,.35); background: rgba(217,119,6,.12); }
+  .card.green-border { border-color: rgba(74,222,128,.35); background: rgba(22,163,74,.12); }
+  .card.red-border  { border-color: rgba(248,113,113,.35); background: rgba(220,38,38,.12); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge.blue  { background: rgba(37,99,235,.25); color: #93C5FD; border: 1px solid rgba(96,165,250,.3); }
+  .badge.teal  { background: rgba(13,148,136,.25); color: #5EEAD4; border: 1px solid rgba(45,212,191,.3); }
+  .badge.green { background: rgba(22,163,74,.25); color: #86EFAC; border: 1px solid rgba(74,222,128,.3); }
+  .badge.amber { background: rgba(217,119,6,.25); color: #FDE68A; border: 1px solid rgba(252,211,77,.3); }
+  .badge.red   { background: rgba(220,38,38,.25); color: #FCA5A5; border: 1px solid rgba(248,113,113,.3); }
+  .badge.purple{ background: rgba(124,58,237,.25); color: #C4B5FD; border: 1px solid rgba(167,139,250,.3); }
+
+  /* ── Pipeline / Flow ── */
+  .pipeline { display: flex; align-items: center; gap: 0; margin-top: 28px; }
+  .pipe-step {
+    flex: 1; text-align: center; padding: 18px 12px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 12px; position: relative;
+  }
+  .pipe-step .icon { font-size: 28px; display: block; margin-bottom: 8px; }
+  .pipe-step h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .pipe-step p { font-size: 11px; opacity: .6; }
+  .pipe-arrow {
+    width: 36px; flex-shrink: 0;
+    text-align: center; font-size: 20px; color: rgba(255,255,255,.3);
+  }
+
+  /* ── Rule Items ── */
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,.05);
+    border-left: 3px solid;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+  }
+  .rule-item .num {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0; margin-top: 1px;
+  }
+  .rule-item.hard { border-color: #F87171; }
+  .rule-item.hard .num { background: #F87171; color: #fff; }
+  .rule-item.soft { border-color: #FCD34D; }
+  .rule-item.soft .num { background: #FCD34D; color: #1f2937; }
+  .rule-item.logic { border-color: #60A5FA; }
+  .rule-item.logic .num { background: #60A5FA; color: #fff; }
+
+  /* ── Scenario Cards ── */
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+  .scenario-card {
+    border-radius: 14px; padding: 22px;
+    border: 1.5px solid; position: relative; overflow: hidden;
+  }
+  .scenario-card::before {
+    content: attr(data-num);
+    position: absolute; top: -10px; right: 14px;
+    font-size: 72px; font-weight: 900; opacity: .06; line-height: 1;
+  }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: rgba(255,255,255,.1); margin: 20px 0; }
+
+  /* ── List ── */
+  .check-list { list-style: none; }
+  .check-list li {
+    padding: 6px 0 6px 28px; position: relative;
+    font-size: 14px; line-height: 1.5;
+    border-bottom: 1px solid rgba(255,255,255,.05);
+  }
+  .check-list li::before {
+    content: '✓'; position: absolute; left: 0;
+    color: #4ADE80; font-weight: 700;
+  }
+  .check-list.cross li::before { content: '✕'; color: #F87171; }
+
+  /* ── Data Model Table ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    text-align: left; padding: 8px 12px;
+    background: rgba(255,255,255,.08);
+    font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: #94A3B8;
+  }
+  .data-table td { padding: 9px 12px; border-bottom: 1px solid rgba(255,255,255,.06); vertical-align: top; }
+  .data-table tr:hover td { background: rgba(255,255,255,.04); }
+
+  /* ── Architecture Box ── */
+  .arch-layer {
+    border-radius: 10px; padding: 12px 18px;
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 10px;
+  }
+  .arch-layer .layer-icon { font-size: 22px; flex-shrink: 0; }
+  .arch-layer h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .arch-layer p { font-size: 12px; opacity: .65; }
+  .arch-arrow { text-align: center; color: rgba(255,255,255,.25); font-size: 16px; margin: 2px 0 2px 36px; }
+
+  /* ── Tradeoff ── */
+  .tradeoff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+
+  /* ── Title Slide Specific ── */
+  .title-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(37,99,235,.25); border: 1px solid rgba(96,165,250,.35);
+    border-radius: 999px; padding: 6px 16px;
+    font-size: 13px; font-weight: 600; color: #93C5FD;
+    margin-bottom: 28px;
+  }
+  .logo-box {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--blue); display: flex; align-items: center;
+    justify-content: center; font-size: 26px; margin-bottom: 28px;
+  }
+  .title-meta { display: flex; gap: 32px; margin-top: 40px; }
+  .title-meta-item { font-size: 13px; }
+  .title-meta-item strong { display: block; color: #60A5FA; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 4px; }
+
+  /* ── Keyboard hint ── */
+  .key-hint {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    font-size: 11px; color: rgba(255,255,255,.25);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .key { padding: 2px 8px; border: 1px solid rgba(255,255,255,.2); border-radius: 4px; font-size: 10px; }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- ═══════════════════════════════════════ SLIDE 1 — TITLE ═══ -->
+  <div class="slide bg-title active" id="s1">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; max-width:780px;">
+      <div class="logo-box">🤖</div>
+      <div class="title-pill">⚡ Interview Assignment — Practical Prototype</div>
+      <h1>HCP Engagement<br><span class="text-blue">Copilot</span></h1>
+      <p class="large muted mt24">
+        An AI-powered next-best-action agent for pharmaceutical commercial teams — combining rules-based guardrails, content retrieval, and LLM reasoning to recommend the right interaction, at the right time, through the right channel.
+      </p>
+      <div class="title-meta">
+        <div class="title-meta-item"><strong>Stack</strong>React + FastAPI + Groq (Llama 3.3)</div>
+        <div class="title-meta-item"><strong>Dataset</strong>25 Synthetic HCPs · 15 Approved Assets</div>
+        <div class="title-meta-item"><strong>Deployed</strong>Vercel (UI) + Render (API)</div>
+        <div class="title-meta-item"><strong>Approach</strong>Rules-First · Retrieval-Augmented · LLM Reasoning</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 2 — PROBLEM ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow">The Problem</div>
+    <h2>What pharma reps deal with every day</h2>
+    <div class="row mt32" style="gap:20px;">
+      <div class="col flex1">
+        <div class="card red-border">
+          <h4 class="text-red" style="margin-bottom:8px;">❌ Who do I contact next?</h4>
+          <p style="font-size:13px;" class="muted">Reps manage 100+ HCPs with no clear signal on who needs attention right now. Priority is often based on gut feel or last CRM login date.</p>
+        </div>
+        <div class="card amber-border">
+          <h4 class="text-amber" style="margin-bottom:8px;">❌ What channel should I use?</h4>
+          <p style="font-size:13px;" class="muted">Email to someone who never opens it. Calls to someone who never picks up. Reps waste time on the wrong channel because there's no intelligent routing.</p>
+        </div>
+        <div class="card red-border">
+          <h4 class="text-red" style="margin-bottom:8px;">❌ Am I even allowed to contact?</h4>
+          <p style="font-size:13px;" class="muted">Opt-outs, adverse event holds, frequency caps, blackout periods — compliance is manual, error-prone, and costly when breached.</p>
+        </div>
+      </div>
+      <div class="col flex1">
+        <div class="card amber-border">
+          <h4 class="text-amber" style="margin-bottom:8px;">❌ What content do I send?</h4>
+          <p style="font-size:13px;" class="muted">Approved content libraries have 50+ assets. Reps default to generic emails rather than tailoring content to the HCP's therapy area and engagement history.</p>
+        </div>
+        <div class="card red-border">
+          <h4 class="text-red" style="margin-bottom:8px;">❌ Why am I recommending this?</h4>
+          <p style="font-size:13px;" class="muted">When challenged by a manager or compliance team, reps can't articulate why they chose a specific action. No audit trail. No transparent rationale.</p>
+        </div>
+        <div class="card amber-border">
+          <h4 class="text-amber" style="margin-bottom:8px;">❌ When is the right moment?</h4>
+          <p style="font-size:13px;" class="muted">Too soon after a meeting? HCP is irritated. Too late after a webinar? The engagement momentum is lost. Timing is everything — and nobody's tracking it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 3 — SOLUTION ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow green">Our Solution</div>
+    <h2>An AI Copilot that answers all of this — automatically</h2>
+    <p class="large muted mt16" style="max-width:700px;">A lightweight agentic system that assembles an HCP context view, runs compliance guardrails, retrieves approved content, and uses an LLM to produce a clinically-grounded, ready-to-act recommendation.</p>
+
+    <div class="row mt32" style="gap:16px; flex-wrap:wrap;">
+      <div class="card teal-border flex1" style="min-width:200px;">
+        <div style="font-size:24px; margin-bottom:8px;">🛡️</div>
+        <h4 style="margin-bottom:6px;">Guardrails First</h4>
+        <p style="font-size:13px;" class="muted">Rules engine runs before any AI. Hard blocks (opt-out, AE hold) are deterministic — no LLM can override them.</p>
+      </div>
+      <div class="card blue-border flex1" style="min-width:200px;">
+        <div style="font-size:24px; margin-bottom:8px;">📚</div>
+        <h4 style="margin-bottom:6px;">Approved Content Only</h4>
+        <p style="font-size:13px;" class="muted">Content retrieval hard-filters on approval status and therapy area match. The LLM cannot hallucinate assets that don't exist.</p>
+      </div>
+      <div class="card green-border flex1" style="min-width:200px;">
+        <div style="font-size:24px; margin-bottom:8px;">🧠</div>
+        <h4 style="margin-bottom:6px;">LLM Reasoning</h4>
+        <p style="font-size:13px;" class="muted">Llama 3.3 70B synthesises HCP profile, engagement signals, rules output, and content to produce a specific, traceable recommendation.</p>
+      </div>
+      <div class="card amber-border flex1" style="min-width:200px;">
+        <div style="font-size:24px; margin-bottom:8px;">✍️</div>
+        <h4 style="margin-bottom:6px;">Draft Communication</h4>
+        <p style="font-size:13px;" class="muted">Generates a ready-to-send email, structured call plan, or meeting prep note — personalised to the HCP.</p>
+      </div>
+    </div>
+
+    <div class="card mt24" style="background:rgba(74,222,128,.08); border-color:rgba(74,222,128,.25);">
+      <div class="row" style="gap:24px; align-items:center;">
+        <div style="font-size:30px;">🎯</div>
+        <div>
+          <h4 style="color:#4ADE80; margin-bottom:4px;">Core Design Principle</h4>
+          <p style="font-size:14px;" class="muted">This is a <strong style="color:#fff;">reasoning and workflow tool</strong>, not a prediction engine. The rep stays in control — the Copilot provides structured intelligence so every decision is faster, safer, and better explained.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 4 — ARCHITECTURE ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow">System Architecture</div>
+    <h2>Layered, rules-first agent design</h2>
+
+    <div class="row mt32" style="gap:40px;">
+      <div style="flex:1.1;">
+        <div class="arch-layer" style="background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.2);">
+          <span class="layer-icon">🖥️</span>
+          <div>
+            <h4>Frontend — React + Tailwind (Vercel)</h4>
+            <p>3-panel UI: HCP list sidebar · Profile context view · AI Copilot panel. Fetches data via REST API.</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:rgba(96,165,250,.1); border:1px solid rgba(96,165,250,.2);">
+          <span class="layer-icon">⚙️</span>
+          <div>
+            <h4>FastAPI Backend (Render)</h4>
+            <p>REST endpoints: /hcps · /hcps/{'{id}'} · /recommend/{'{id}'}. Orchestrates the full pipeline per request.</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:rgba(252,211,77,.1); border:1px solid rgba(252,211,77,.2);">
+          <span class="layer-icon">📏</span>
+          <div>
+            <h4>Rules Engine (Python — runs FIRST)</h4>
+            <p>Opt-out · Blackout · Frequency caps · Channel logic · Status classification. Hard blocks bypass LLM entirely.</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:rgba(45,212,191,.1); border:1px solid rgba(45,212,191,.2);">
+          <span class="layer-icon">📚</span>
+          <div>
+            <h4>Content Retriever (Python)</h4>
+            <p>Filters by approval status + channel + therapy area relevance score. Returns top-K assets for LLM context.</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:rgba(124,58,237,.1); border:1px solid rgba(124,58,237,.2);">
+          <span class="layer-icon">🧠</span>
+          <div>
+            <h4>LLM — Groq · Llama 3.3 70B</h4>
+            <p>Receives structured context prompt. Returns strict JSON: action · channel · content · draft · rationale · assumptions.</p>
+          </div>
+        </div>
+        <div class="arch-arrow">↕</div>
+        <div class="arch-layer" style="background:rgba(74,222,128,.1); border:1px solid rgba(74,222,128,.2);">
+          <span class="layer-icon">🗄️</span>
+          <div>
+            <h4>Data Layer — Static JSON</h4>
+            <p>hcps.json (25 synthetic HCPs) · content_library.json (15 approved assets). Simple, portable, no DB overhead.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:.9;">
+        <div class="card" style="margin-bottom:16px;">
+          <h4 style="margin-bottom:12px; color:#60A5FA;">Request Flow</h4>
+          <div style="font-size:13px; line-height:2;">
+            <div>1️⃣ &nbsp;Rep selects HCP in sidebar</div>
+            <div>2️⃣ &nbsp;App fetches full HCP profile</div>
+            <div>3️⃣ &nbsp;Rep clicks "Generate Recommendation"</div>
+            <div>4️⃣ &nbsp;POST /recommend/{'{hcp_id}'}</div>
+            <div>5️⃣ &nbsp;Rules engine runs — hard block? → return immediately</div>
+            <div>6️⃣ &nbsp;Content retrieval — top 4 matched assets</div>
+            <div>7️⃣ &nbsp;LLM call with full context prompt</div>
+            <div>8️⃣ &nbsp;JSON response + rules metadata merged</div>
+            <div>9️⃣ &nbsp;Recommendation displayed in Copilot Panel</div>
+          </div>
+        </div>
+        <div class="card amber-border">
+          <h4 style="margin-bottom:8px;">Key Design Decisions</h4>
+          <ul class="check-list" style="font-size:13px;">
+            <li>Rules run before LLM — compliance cannot be hallucinated</li>
+            <li>LLM only sees pre-filtered approved content</li>
+            <li>Temperature 0.3 — deterministic, clinically consistent</li>
+            <li>JSON output enforced — no free-text drift</li>
+            <li>Stateless API — each call is independent</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 5 — DATA MODEL ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow teal">Data Model</div>
+    <h2>Synthetic but realistic — 25 HCPs · 15 Assets</h2>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1.1;">
+        <div class="card" style="margin-bottom:16px;">
+          <h4 style="color:#2DD4BF; margin-bottom:12px;">🧑‍⚕️ HCP Profile Structure</h4>
+          <table class="data-table">
+            <tr><th>Field</th><th>Example</th><th>Purpose</th></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">id, name, specialty</code></td><td style="color:#94A3B8;">hcp-003, Dr. Priya Sharma, Cardiology</td><td style="color:#94A3B8;">Identity</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">prescribingTier</code></td><td style="color:#94A3B8;">high / mid / low</td><td style="color:#94A3B8;">Commercial prioritisation</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">preferredChannel</code></td><td style="color:#94A3B8;">email / phone / f2f / webinar</td><td style="color:#94A3B8;">Channel routing</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">therapyAreas</code></td><td style="color:#94A3B8;">["Cardiovascular", "Metabolics"]</td><td style="color:#94A3B8;">Content matching</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">engagementSignals</code></td><td style="color:#94A3B8;">emailOpens, webinarAttendance, portalLogins</td><td style="color:#94A3B8;">Engagement scoring</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">interactionHistory</code></td><td style="color:#94A3B8;">date, type, topic, outcome</td><td style="color:#94A3B8;">LLM context + rules</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">optOut, blackout</code></td><td style="color:#94A3B8;">true / false + blackoutReason</td><td style="color:#94A3B8;">Compliance guardrails</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div style="flex:.9;">
+        <div class="card" style="margin-bottom:16px;">
+          <h4 style="color:#60A5FA; margin-bottom:12px;">📁 Content Asset Structure</h4>
+          <table class="data-table">
+            <tr><th>Field</th><th>Example</th></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">id, title, type</code></td><td style="color:#94A3B8;">asset-001, GLP-1 Summary, clinical-study</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">channels</code></td><td style="color:#94A3B8;">["email", "f2f"]</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">approvalStatus</code></td><td style="color:#94A3B8;">approved / pending / rejected</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">therapyAreas</code></td><td style="color:#94A3B8;">["Endocrinology", "Metabolics"]</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">relevanceScore</code></td><td style="color:#94A3B8;">{"Endocrinology": 10, "Cardio": 4}</td></tr>
+            <tr><td><code style="font-size:11px; color:#93C5FD;">snippet</code></td><td style="color:#94A3B8;">Brief clinical description for LLM prompt</td></tr>
+          </table>
+        </div>
+        <div class="card teal-border">
+          <h4 style="margin-bottom:10px;">Coverage across 25 HCPs</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:6px;">
+            <span class="badge purple">Endocrinology ×4</span>
+            <span class="badge red">HIV ×4</span>
+            <span class="badge blue">Cardiovascular ×5</span>
+            <span class="badge amber">Oncology ×3</span>
+            <span class="badge teal">Mental Health ×3</span>
+            <span class="badge green">Maternal Health ×3</span>
+            <span class="badge blue">Respiratory ×3</span>
+          </div>
+          <div class="divider"></div>
+          <div style="display:flex; gap:16px; font-size:13px;">
+            <div><span style="color:#4ADE80; font-weight:700;">15</span> <span class="muted">approved content assets</span></div>
+            <div><span style="color:#4ADE80; font-weight:700;">7</span> <span class="muted">therapy areas</span></div>
+            <div><span style="color:#4ADE80; font-weight:700;">8</span> <span class="muted">countries</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 6 — AGENT PIPELINE ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow">Agent Design</div>
+    <h2>Three-stage pipeline: Rules → Retrieval → Reasoning</h2>
+
+    <div class="pipeline">
+      <div class="pipe-step" style="border-color:rgba(248,113,113,.4); background:rgba(248,113,113,.08);">
+        <span class="icon">📏</span>
+        <h4>Stage 1<br>Rules Engine</h4>
+        <p>Deterministic compliance checks. Hard blocks bypass LLM entirely. Soft warnings pass through with flags.</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="border-color:rgba(45,212,191,.4); background:rgba(45,212,191,.08);">
+        <span class="icon">🔍</span>
+        <h4>Stage 2<br>Content Retrieval</h4>
+        <p>Filter → score → rank. Only approved assets matching HCP's therapy area and recommended channels.</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="border-color:rgba(124,58,237,.4); background:rgba(124,58,237,.08);">
+        <span class="icon">🧠</span>
+        <h4>Stage 3<br>LLM Reasoning</h4>
+        <p>Llama 3.3 70B receives full context. Returns strict JSON with action, draft, rationale, assumptions.</p>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step" style="border-color:rgba(74,222,128,.4); background:rgba(74,222,128,.08);">
+        <span class="icon">✅</span>
+        <h4>Output<br>Enrichment</h4>
+        <p>LLM output merged with rules metadata: guardrail status, engagement score, HCP status, warnings.</p>
+      </div>
+    </div>
+
+    <div class="row mt24" style="gap:16px;">
+      <div class="card flex1" style="background:rgba(248,113,113,.07); border-color:rgba(248,113,113,.2);">
+        <h4 style="color:#F87171; margin-bottom:10px;">Stage 1 — What Rules Engine Produces</h4>
+        <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>• <strong>can_contact</strong> — true/false</div>
+          <div>• <strong>guardrail_type</strong> — hard_block / soft_warning / clear</div>
+          <div>• <strong>engagement_score</strong> — 0–10</div>
+          <div>• <strong>hcp_status</strong> — new / active / re-engaging / churned</div>
+          <div>• <strong>recommended_channels</strong> — list</div>
+          <div>• <strong>timing_suggestion</strong> — text guidance</div>
+          <div>• <strong>days_since_contact</strong> — integer</div>
+          <div>• <strong>warnings</strong> — list of soft flags</div>
+        </div>
+      </div>
+      <div class="card flex1" style="background:rgba(124,58,237,.07); border-color:rgba(124,58,237,.2);">
+        <h4 style="color:#C4B5FD; margin-bottom:10px;">Stage 3 — What LLM Returns (Strict JSON)</h4>
+        <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+          <div>• <strong>next_best_action</strong> — enum</div>
+          <div>• <strong>channel</strong> — email / phone / f2f / webinar</div>
+          <div>• <strong>priority</strong> — high / medium / low</div>
+          <div>• <strong>timing</strong> — natural language</div>
+          <div>• <strong>recommended_content</strong> — with reasons</div>
+          <div>• <strong>draft_communication</strong> — email / call plan</div>
+          <div>• <strong>rationale</strong> — 2-3 sentences</div>
+          <div>• <strong>assumptions + missing_data_flags</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 7 — RULES ENGINE ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow red">Guardrails</div>
+    <h2>Rules engine — how compliance is enforced</h2>
+    <p class="muted mt16" style="font-size:14px;">Runs in strict priority order. First matching hard block terminates immediately — no LLM call is made.</p>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1;">
+        <div class="rule-item hard">
+          <div class="num">1</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">Opt-Out Check — HARD BLOCK</h4><p style="font-size:12px;" class="muted">If hcp.optOut == true → return "Do Not Contact". Unsubscribed HCPs are never reachable via this system.</p></div>
+        </div>
+        <div class="rule-item hard">
+          <div class="num">2</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">Compliance Blackout — HARD BLOCK</h4><p style="font-size:12px;" class="muted">If hcp.blackout == true → return blocked reason (e.g. adverse event hold). Medical affairs sets this flag manually.</p></div>
+        </div>
+        <div class="rule-item hard">
+          <div class="num">3</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">Minimum Frequency Gap — HARD BLOCK</h4><p style="font-size:12px;" class="muted">If contacted &lt; 3 days ago → blocked. Prevents aggressive re-contact that would violate industry norms.</p></div>
+        </div>
+        <div class="rule-item soft">
+          <div class="num">4</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">Recent Contact Warning — SOFT WARNING</h4><p style="font-size:12px;" class="muted">If contacted &lt; 7 days ago → warning passed to LLM. Allows contact but flags it; LLM may recommend lighter touch.</p></div>
+        </div>
+        <div class="rule-item logic">
+          <div class="num">5</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">Channel Preference Logic</h4><p style="font-size:12px;" class="muted">Prefers email but 0 opens? → switch to phone/f2f. Prefers f2f but last was f2f &lt;21 days? → lighter touch. Webinar preference? → recommend webinar + email.</p></div>
+        </div>
+        <div class="rule-item logic">
+          <div class="num">6</div>
+          <div><h4 style="font-size:13px; margin-bottom:3px;">HCP Status Classification</h4><p style="font-size:12px;" class="muted">New (no history) · Active (&lt;45 days) · Re-Engaging (45–90 days) · Churned (&gt;90 days). Status shapes LLM timing guidance.</p></div>
+        </div>
+      </div>
+
+      <div style="flex:.8;">
+        <div class="card teal-border" style="margin-bottom:14px;">
+          <h4 style="color:#2DD4BF; margin-bottom:10px;">Engagement Scoring (0–10)</h4>
+          <div style="font-size:13px;" class="col">
+            <div class="row" style="justify-content:space-between;"><span>Email opens (max 10)</span><span class="text-blue">× 0.40</span></div>
+            <div class="row" style="justify-content:space-between;"><span>Webinar attendance (max 5)</span><span class="text-blue">× 0.80</span></div>
+            <div class="row" style="justify-content:space-between;"><span>Portal logins (max 15)</span><span class="text-blue">× 0.20</span></div>
+            <div class="row" style="justify-content:space-between;"><span>Click-throughs (max 3)</span><span class="text-blue">× 0.50</span></div>
+            <div class="divider"></div>
+            <div class="row" style="justify-content:space-between; font-weight:700;"><span>Total (capped at 10)</span><span class="text-green">0–10</span></div>
+          </div>
+        </div>
+        <div class="card amber-border">
+          <h4 style="color:#FCD34D; margin-bottom:8px;">Why Rules First?</h4>
+          <p style="font-size:13px;" class="muted">In pharma, compliance is non-negotiable. An LLM can hallucinate a justification for contacting an opted-out HCP if given the chance. By running rules deterministically before the LLM, we guarantee no AI reasoning can override a legal or safety constraint.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 8 — SCENARIOS OVERVIEW ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow green">Demo Scenarios</div>
+    <h2>Four real-world cases the system handles</h2>
+    <p class="muted mt16" style="max-width:680px; font-size:14px;">Each scenario exercises a different part of the pipeline — from pure AI reasoning on high-quality signals, to hard compliance blocks with no LLM call at all.</p>
+
+    <div class="scenario-grid">
+      <div class="scenario-card" style="background:rgba(74,222,128,.07); border-color:rgba(74,222,128,.3);" data-num="1">
+        <div class="badge green" style="margin-bottom:12px;">⚡ Scenario 1</div>
+        <h3 style="color:#4ADE80; margin-bottom:8px;">Digitally Engaged HCP</h3>
+        <p style="font-size:13px;" class="muted">Dr. Priya Sharma — 5 webinars attended, 11 email opens, 18 portal logins. System identifies high engagement and recommends a targeted, high-priority follow-up with the most relevant clinical content.</p>
+        <div class="divider"></div>
+        <div style="font-size:12px; color:#4ADE80;">Expected: invite_to_webinar · High Priority · Within 3 days</div>
+      </div>
+
+      <div class="scenario-card" style="background:rgba(252,211,77,.07); border-color:rgba(252,211,77,.3);" data-num="2">
+        <div class="badge amber" style="margin-bottom:12px;">📉 Scenario 2</div>
+        <h3 style="color:#FCD34D; margin-bottom:8px;">Low Engagement / Churned HCP</h3>
+        <p style="font-size:13px;" class="muted">Dr. David Park — no engagement for 7+ months. Score: ~0.4/10. System classifies as "churned" and recommends a soft, low-commitment re-engagement — not heavy sales content.</p>
+        <div class="divider"></div>
+        <div style="font-size:12px; color:#FCD34D;">Expected: send_newsletter · Low Priority · Soft re-engagement</div>
+      </div>
+
+      <div class="scenario-card" style="background:rgba(96,165,250,.07); border-color:rgba(96,165,250,.3);" data-num="3">
+        <div class="badge blue" style="margin-bottom:12px;">🤝 Scenario 3</div>
+        <h3 style="color:#60A5FA; margin-bottom:8px;">F2F Preference HCP</h3>
+        <p style="font-size:13px;" class="muted">Dr. James Okafor — prefers in-person meetings, ignores email (2 opens across 5+ interactions). Rules engine overrides email channel and routes to f2f. LLM generates a meeting prep note, not an email draft.</p>
+        <div class="divider"></div>
+        <div style="font-size:12px; color:#60A5FA;">Expected: arrange_f2f · High Priority · Meeting prep note</div>
+      </div>
+
+      <div class="scenario-card" style="background:rgba(251,191,36,.07); border-color:rgba(251,191,36,.3);" data-num="4">
+        <div class="badge amber" style="margin-bottom:12px;">⏸️ Scenario 4</div>
+        <h3 style="color:#FDE68A; margin-bottom:8px;">Wait & Monitor</h3>
+        <p style="font-size:13px;" class="muted">Dr. Leila Ahmadi — just re-contacted 5 days ago after a cold period. Soft warning triggered. Very low signals. LLM, seeing the warning and weak engagement, recommends holding further outreach.</p>
+        <div class="divider"></div>
+        <div style="font-size:12px; color:#FDE68A;">Expected: wait_and_monitor · Low Priority · Hold 7–14 days</div>
+      </div>
+    </div>
+
+    <div class="card mt24" style="background:rgba(248,113,113,.07); border-color:rgba(248,113,113,.25); padding:14px 20px;">
+      <div class="row" style="align-items:center; gap:14px;">
+        <span style="font-size:22px;">🛡️</span>
+        <div>
+          <strong style="color:#F87171;">Bonus: Compliance Hard Block</strong>
+          <span style="font-size:13px; color:rgba(255,255,255,.5); margin-left:12px;">Dr. Thomas Mueller — adverse event hold active. System returns blocked status immediately. No LLM call. No draft. No content.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 9 — SCENARIO 1 ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow green">Scenario 1 — Digitally Engaged</div>
+    <h2>Dr. Priya Sharma, Cardiologist · Mumbai</h2>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1;">
+        <div class="card green-border" style="margin-bottom:14px;">
+          <h4 style="color:#4ADE80; margin-bottom:10px;">HCP Profile</h4>
+          <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div><span class="muted">Specialty:</span> Cardiovascular + Metabolics</div>
+            <div><span class="muted">Tier:</span> Mid · 310 patients</div>
+            <div><span class="muted">Channel:</span> Webinar preference</div>
+            <div><span class="muted">Status:</span> <span class="text-green">Active</span></div>
+            <div><span class="muted">Last contact:</span> 18 days ago (webinar)</div>
+            <div><span class="muted">Guardrail:</span> <span class="text-green">Clear</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <h4 style="margin-bottom:10px;">Engagement Signals</h4>
+          <div style="font-size:13px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Email Opens</span><span style="color:#4ADE80; font-weight:700;">11 / 10 max</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px; margin-bottom:10px;"><div style="width:100%; height:100%; background:#4ADE80; border-radius:4px;"></div></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Webinar Attendance</span><span style="color:#4ADE80; font-weight:700;">5 / 5 max</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px; margin-bottom:10px;"><div style="width:100%; height:100%; background:#4ADE80; border-radius:4px;"></div></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Portal Logins</span><span style="color:#4ADE80; font-weight:700;">18 / 15 max</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px;"><div style="width:100%; height:100%; background:#4ADE80; border-radius:4px;"></div></div>
+          </div>
+          <div style="margin-top:12px; padding:8px 12px; background:rgba(74,222,128,.15); border-radius:8px; font-size:13px; font-weight:700; color:#4ADE80; text-align:center;">Engagement Score: 9.4 / 10</div>
+        </div>
+      </div>
+
+      <div style="flex:1.2;">
+        <div class="card teal-border" style="margin-bottom:14px;">
+          <h4 style="color:#2DD4BF; margin-bottom:10px;">What the System Does</h4>
+          <ol style="font-size:13px; padding-left:18px; line-height:2;">
+            <li>Rules engine → <strong style="color:#4ADE80;">Clear</strong> · 18 days since contact · webinar channel recommended</li>
+            <li>Content retrieval → SGLT2 study + CV risk calculator + webinar invite (all CV-relevant)</li>
+            <li>LLM sees: max engagement signals, active Q&A participant, webinar attendance history</li>
+            <li>LLM recommends: <strong>invite_to_webinar</strong> — "AI in Metabolics" April 2026 event</li>
+          </ol>
+        </div>
+        <div class="card green-border">
+          <h4 style="color:#4ADE80; margin-bottom:10px;">Expected Recommendation Output</h4>
+          <div style="font-size:13px;">
+            <div style="margin-bottom:8px;"><strong>Action:</strong> invite_to_webinar · <strong>Channel:</strong> Webinar + Email</div>
+            <div style="margin-bottom:8px;"><strong>Priority:</strong> <span class="badge green">High</span> · <strong>Timing:</strong> Within 3 days</div>
+            <div style="margin-bottom:8px;"><strong>Content:</strong> Webinar invite asset + SGLT2 clinical study</div>
+            <div style="padding:10px 12px; background:rgba(74,222,128,.1); border-radius:8px; font-style:italic; font-size:12px; color:rgba(255,255,255,.75);">"Dr. Sharma is among the most digitally engaged HCPs in the territory. Her attendance at the SGLT2 webinar with active Q&A participation signals strong interest. The April metabolics webinar is an ideal next touchpoint — CME-accredited, with relevant KOL speakers."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 10 — SCENARIO 2 ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow amber">Scenario 2 — Low Engagement / Churned</div>
+    <h2>Dr. David Park, Psychiatrist · Edinburgh</h2>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1;">
+        <div class="card amber-border" style="margin-bottom:14px;">
+          <h4 style="color:#FCD34D; margin-bottom:10px;">HCP Profile</h4>
+          <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div><span class="muted">Specialty:</span> Mental Health</div>
+            <div><span class="muted">Tier:</span> Low · 190 patients</div>
+            <div><span class="muted">Channel:</span> Email preference</div>
+            <div><span class="muted">Status:</span> <span style="color:#F87171;">Churned</span></div>
+            <div><span class="muted">Last contact:</span> 225 days ago</div>
+            <div><span class="muted">Guardrail:</span> <span class="text-green">Clear</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <h4 style="margin-bottom:10px;">Engagement Signals</h4>
+          <div style="font-size:13px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Email Opens</span><span style="color:#F87171; font-weight:700;">1 / 10</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px; margin-bottom:10px;"><div style="width:10%; height:100%; background:#F87171; border-radius:4px;"></div></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Webinar Attendance</span><span style="color:#F87171; font-weight:700;">0 / 5</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px; margin-bottom:10px;"><div style="width:2%; height:100%; background:#F87171; border-radius:4px;"></div></div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:6px;"><span>Portal Logins</span><span style="color:#F87171; font-weight:700;">0 / 15</span></div>
+            <div style="background:rgba(255,255,255,.1); border-radius:4px; height:6px;"><div style="width:2%; height:100%; background:#F87171; border-radius:4px;"></div></div>
+          </div>
+          <div style="margin-top:12px; padding:8px 12px; background:rgba(248,113,113,.15); border-radius:8px; font-size:13px; font-weight:700; color:#F87171; text-align:center;">Engagement Score: 0.4 / 10</div>
+        </div>
+      </div>
+
+      <div style="flex:1.2;">
+        <div class="card" style="margin-bottom:14px; border-color:rgba(252,211,77,.3); background:rgba(252,211,77,.06);">
+          <h4 style="color:#FCD34D; margin-bottom:10px;">What the System Does</h4>
+          <ol style="font-size:13px; padding-left:18px; line-height:2;">
+            <li>Rules engine → <strong>Clear</strong> (contact allowed) · 225 days · status = <strong style="color:#F87171;">Churned</strong></li>
+            <li>Timing suggestion: "Soft re-engagement — avoid heavy sales messaging"</li>
+            <li>Content retrieval → mental health newsletter + referral pathway card</li>
+            <li>LLM sees: churned status, near-zero signals, webinar no-show history, low prescriber tier</li>
+            <li>LLM recommends: <strong>send_newsletter</strong> — low-commitment re-engagement touchpoint</li>
+          </ol>
+        </div>
+        <div class="card amber-border">
+          <h4 style="color:#FCD34D; margin-bottom:10px;">Expected Recommendation Output</h4>
+          <div style="font-size:13px;">
+            <div style="margin-bottom:8px;"><strong>Action:</strong> send_newsletter · <strong>Channel:</strong> Email</div>
+            <div style="margin-bottom:8px;"><strong>Priority:</strong> <span class="badge amber">Low</span> · <strong>Timing:</strong> This week</div>
+            <div style="margin-bottom:8px;"><strong>Content:</strong> Mental Health Quarterly Newsletter (low-pressure)</div>
+            <div style="padding:10px 12px; background:rgba(252,211,77,.1); border-radius:8px; font-style:italic; font-size:12px; color:rgba(255,255,255,.75);">"Dr. Park has not engaged in over 7 months. A low-effort newsletter is the most appropriate re-entry point — it delivers value without pressure and tests whether the channel is still viable before committing heavier resources."</div>
+          </div>
+          <div style="margin-top:10px; padding:8px 12px; background:rgba(255,255,255,.05); border-radius:8px; font-size:12px; color:#FCD34D;">
+            ⚠️ Key insight: System correctly avoids sending the heavy clinical study or scheduling a call — both would be wasted effort on a churned, low-tier HCP.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 11 — SCENARIO 3 ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow">Scenario 3 — F2F Preference</div>
+    <h2>Dr. James Okafor, HIV Specialist · London</h2>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1;">
+        <div class="card blue-border" style="margin-bottom:14px;">
+          <h4 style="color:#60A5FA; margin-bottom:10px;">HCP Profile</h4>
+          <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div><span class="muted">Specialty:</span> HIV / Infectious Disease</div>
+            <div><span class="muted">Tier:</span> High · 380 patients</div>
+            <div><span class="muted">Channel:</span> F2F preference</div>
+            <div><span class="muted">Status:</span> <span class="text-green">Active</span></div>
+            <div><span class="muted">Last contact:</span> 42 days ago (f2f)</div>
+            <div><span class="muted">Guardrail:</span> <span class="text-green">Clear</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <h4 style="margin-bottom:10px;">Why Email Fails Here</h4>
+          <div style="font-size:13px; line-height:1.9;" class="muted">
+            <div>📧 Email opens: <strong style="color:#F87171;">2</strong> across 5 interactions</div>
+            <div>📹 Webinar attendance: <strong style="color:#F87171;">1</strong> (1 year ago)</div>
+            <div>🖥️ Portal logins: <strong style="color:#F87171;">4</strong> (moderate)</div>
+            <div style="margin-top:8px; padding:8px 10px; background:rgba(248,113,113,.1); border-radius:6px; font-size:12px; color:#F87171;">Rules engine detects: email preferred but opens near-zero. Overrides channel recommendation to f2f.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1.2;">
+        <div class="card" style="margin-bottom:14px; border-color:rgba(96,165,250,.3); background:rgba(96,165,250,.06);">
+          <h4 style="color:#60A5FA; margin-bottom:10px;">What the System Does</h4>
+          <ol style="font-size:13px; padding-left:18px; line-height:2;">
+            <li>Rules engine → Clear · 42 days · preferred=f2f · last f2f was 42 days ago (not &lt;21, so no override)</li>
+            <li>Channel: <strong>f2f</strong> recommended (rules respect preference + sufficient time elapsed)</li>
+            <li>Content retrieval → HIV adherence guide + U=U kit (f2f compatible assets)</li>
+            <li>LLM generates: <strong>meeting prep note</strong> (not email draft) with call agenda structure</li>
+          </ol>
+        </div>
+        <div class="card blue-border">
+          <h4 style="color:#60A5FA; margin-bottom:10px;">Expected Recommendation Output</h4>
+          <div style="font-size:13px;">
+            <div style="margin-bottom:8px;"><strong>Action:</strong> arrange_f2f · <strong>Channel:</strong> F2F</div>
+            <div style="margin-bottom:8px;"><strong>Priority:</strong> <span class="badge blue">High</span> · <strong>Timing:</strong> Within 2 weeks</div>
+            <div style="margin-bottom:8px;"><strong>Content:</strong> HIV Adherence Guide + U=U Messaging Kit</div>
+            <div style="padding:10px 12px; background:rgba(96,165,250,.1); border-radius:8px; font-style:italic; font-size:12px; color:rgba(255,255,255,.75);">"Dr. Okafor's email engagement history (2 opens across 5 interactions) indicates the channel is ineffective for this HCP. As a high-tier HIV KOL with a strong f2f relationship, an in-person meeting maximises impact. The 42-day gap is appropriate for a meaningful follow-up on the HIV adherence programme."</div>
+          </div>
+          <div style="margin-top:10px; padding:8px 12px; background:rgba(255,255,255,.05); border-radius:8px; font-size:12px; color:#60A5FA;">
+            🎯 Key insight: System switches from email to f2f based on engagement evidence — and generates a meeting prep note, not an email.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 12 — SCENARIO 4 ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow amber">Scenario 4 — Wait &amp; Monitor</div>
+    <h2>Dr. Leila Ahmadi, Endocrinologist · Dubai</h2>
+
+    <div class="row mt24" style="gap:20px;">
+      <div style="flex:1;">
+        <div class="card" style="border-color:rgba(251,191,36,.3); background:rgba(251,191,36,.06); margin-bottom:14px;">
+          <h4 style="color:#FDE68A; margin-bottom:10px;">HCP Profile</h4>
+          <div style="font-size:13px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <div><span class="muted">Specialty:</span> Endocrinology</div>
+            <div><span class="muted">Tier:</span> Mid · 220 patients</div>
+            <div><span class="muted">Channel:</span> Email preference</div>
+            <div><span class="muted">Status:</span> <span class="text-green">Active</span> (just)</div>
+            <div><span class="muted">Last contact:</span> <strong style="color:#FDE68A;">5 days ago</strong></div>
+            <div><span class="muted">Guardrail:</span> <span style="color:#FCD34D;">Soft Warning ⚠️</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:14px;">
+          <h4 style="margin-bottom:10px;">Why the System Holds Back</h4>
+          <div style="font-size:13px; line-height:1.9;" class="muted">
+            <div>📅 Last contact: <strong style="color:#FDE68A;">5 days ago</strong> — below 7-day recommended gap</div>
+            <div>📧 Email opens: <strong style="color:#FCD34D;">1</strong> (just opened the re-engagement email)</div>
+            <div>🖱️ Clicks: <strong style="color:#F87171;">0</strong> — no follow-through action</div>
+            <div>📹 Webinar: <strong style="color:#F87171;">0</strong> attendances</div>
+            <div style="margin-top:8px; padding:8px 10px; background:rgba(252,211,77,.1); border-radius:6px; font-size:12px; color:#FCD34D;">Soft warning: "Contacted 5 days ago. Min recommended gap is 7 days." Passed to LLM alongside weak engagement signals.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1.2;">
+        <div class="card" style="margin-bottom:14px; border-color:rgba(251,191,36,.3); background:rgba(251,191,36,.05);">
+          <h4 style="color:#FDE68A; margin-bottom:10px;">What the System Does</h4>
+          <ol style="font-size:13px; padding-left:18px; line-height:2;">
+            <li>Rules engine → <strong style="color:#FCD34D;">Soft Warning</strong> (not blocked — can contact)</li>
+            <li>LLM receives: soft warning flag + near-zero engagement signals + notes about mixed early signals</li>
+            <li>LLM applies critical rule: <em>"If situation calls for restraint, recommend waiting"</em></li>
+            <li>LLM recommends: <strong>wait_and_monitor</strong> — allow current email to be assessed</li>
+          </ol>
+        </div>
+        <div class="card" style="border-color:rgba(251,191,36,.35); background:rgba(251,191,36,.07);">
+          <h4 style="color:#FDE68A; margin-bottom:10px;">Expected Recommendation Output</h4>
+          <div style="font-size:13px;">
+            <div style="margin-bottom:8px;"><strong>Action:</strong> wait_and_monitor · <strong>Channel:</strong> None (hold)</div>
+            <div style="margin-bottom:8px;"><strong>Priority:</strong> <span class="badge amber">Low</span> · <strong>Timing:</strong> Wait 7–14 days</div>
+            <div style="padding:10px 12px; background:rgba(251,191,36,.1); border-radius:8px; font-style:italic; font-size:12px; color:rgba(255,255,255,.75);">"Dr. Ahmadi was contacted 5 days ago after a 5-month cold period. The re-engagement email was opened but not clicked — a promising but inconclusive signal. Sending another communication this week risks over-contact and could push her to opt out. Recommend monitoring for 7–14 days before the next touchpoint."</div>
+          </div>
+          <div style="margin-top:10px; padding:8px 12px; background:rgba(255,255,255,.05); border-radius:8px; font-size:12px; color:#FDE68A;">
+            ⏸️ Key insight: System recommends restraint even though contact is technically allowed — the LLM reasons through the risk of over-contact, not just compliance rules.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 13 — TRADEOFFS ═══ -->
+  <div class="slide bg-navy">
+    <div class="eyebrow">Tradeoffs &amp; Design Decisions</div>
+    <h2>Deliberate choices — and why we made them</h2>
+
+    <div class="row mt28" style="gap:16px;">
+      <div style="flex:1;">
+        <div class="tradeoff-row">
+          <div class="card blue-border">
+            <h4 style="color:#60A5FA; font-size:13px; margin-bottom:6px;">JSON files vs. database</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Static JSON. Zero setup, portable, shareable. <strong style="color:#fff;">Trade-off:</strong> No persistence, no multi-user, not scalable. Appropriate for a prototype — swap to Postgres in production.</p>
+          </div>
+          <div class="card teal-border">
+            <h4 style="color:#2DD4BF; font-size:13px; margin-bottom:6px;">Rules engine vs. full ML model</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Deterministic rules. Auditable, debuggable, no training data needed. <strong style="color:#fff;">Trade-off:</strong> Less nuanced than a trained model. Right choice for compliance-critical guardrails.</p>
+          </div>
+        </div>
+        <div class="tradeoff-row">
+          <div class="card amber-border">
+            <h4 style="color:#FCD34D; font-size:13px; margin-bottom:6px;">Score-based retrieval vs. embeddings</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Explicit relevance scores per therapy area. Transparent, controllable. <strong style="color:#fff;">Trade-off:</strong> Less flexible than semantic search. In production: add FAISS or pgvector embeddings.</p>
+          </div>
+          <div class="card green-border">
+            <h4 style="color:#4ADE80; font-size:13px; margin-bottom:6px;">Groq (Llama 3.3) vs. GPT-4</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Open-source model via Groq. Fast, free tier, OpenAI-compatible API. <strong style="color:#fff;">Trade-off:</strong> Slightly less reasoning quality than GPT-4. Acceptable for structured JSON output at temp 0.3.</p>
+          </div>
+        </div>
+        <div class="tradeoff-row">
+          <div class="card" style="border-color:rgba(167,139,250,.3); background:rgba(124,58,237,.08);">
+            <h4 style="color:#C4B5FD; font-size:13px; margin-bottom:6px;">Single-turn vs. multi-turn LLM</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Single prompt with full context. Simple, stateless, fast. <strong style="color:#fff;">Trade-off:</strong> No memory across sessions. Production would add session state and conversation history.</p>
+          </div>
+          <div class="card" style="border-color:rgba(248,113,113,.3); background:rgba(220,38,38,.08);">
+            <h4 style="color:#F87171; font-size:13px; margin-bottom:6px;">No authentication</h4>
+            <p style="font-size:12px;" class="muted"><strong style="color:#fff;">Chosen:</strong> Open access for prototype demo. <strong style="color:#fff;">Trade-off:</strong> Not deployable in production. Auth, role-based access, and rep-level personalisation needed for real use.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:.55;">
+        <div class="card" style="margin-bottom:14px; background:rgba(255,255,255,.04);">
+          <h4 style="margin-bottom:10px; color:#60A5FA;">What's synthetic vs. real</h4>
+          <ul class="check-list" style="font-size:12px;">
+            <li>HCP profiles — synthetic, representative</li>
+            <li>Therapy areas — real (HIV, CV, Endo…)</li>
+            <li>Engagement signals — plausible mock data</li>
+            <li>Content assets — synthetic but realistic pharma</li>
+            <li>Business rules — based on real pharma standards</li>
+          </ul>
+          <ul class="check-list cross mt8" style="font-size:12px;">
+            <li>No real patient data used anywhere</li>
+            <li>No trained predictive model</li>
+            <li>No real CRM integration</li>
+          </ul>
+        </div>
+        <div class="card amber-border">
+          <h4 style="color:#FCD34D; margin-bottom:8px;">Temperature: 0.3 — Why?</h4>
+          <p style="font-size:12px;" class="muted">Clinical recommendations require <strong style="color:#fff;">consistency</strong>. High temperature creates variance between runs for the same HCP — unacceptable when a rep presents the recommendation to a manager. Low temperature gives traceable, reproducible output.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 14 — NEXT STEPS ═══ -->
+  <div class="slide bg-dark">
+    <div class="eyebrow teal">Next Steps</div>
+    <h2>What production-ready would look like</h2>
+    <p class="muted mt16" style="font-size:14px; max-width:680px;">The prototype demonstrates the core workflow. Scaling to production involves several well-defined engineering upgrades — none of which change the fundamental agent architecture.</p>
+
+    <div class="row mt24" style="gap:16px;">
+      <div style="flex:1;">
+        <h4 style="color:#2DD4BF; margin-bottom:12px; font-size:13px; letter-spacing:.06em; text-transform:uppercase;">Data &amp; Storage</h4>
+        <div class="card" style="margin-bottom:10px; padding:14px 16px;">
+          <div style="font-size:13px; line-height:1.9;">
+            <div>🗄️ &nbsp;Replace JSON with <strong>PostgreSQL</strong> — proper HCP records, versioning, audit trail</div>
+            <div>🔍 &nbsp;Add <strong>vector embeddings</strong> (pgvector / FAISS) for semantic content matching</div>
+            <div>📡 &nbsp;CRM integration (Veeva / Salesforce) for live HCP data sync</div>
+            <div>📊 &nbsp;Event streaming (Kafka / Kinesis) for real-time engagement signal ingestion</div>
+          </div>
+        </div>
+
+        <h4 style="color:#60A5FA; margin-bottom:12px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; margin-top:16px;">Agent Intelligence</h4>
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:13px; line-height:1.9;">
+            <div>🧠 &nbsp;Multi-turn memory — track recommendation history per rep session</div>
+            <div>📈 &nbsp;Feedback loop — rep accepts/rejects recommendation → fine-tune prompt</div>
+            <div>🎯 &nbsp;Predictive scoring — trained model for engagement propensity</div>
+            <div>🌍 &nbsp;Multi-language draft generation for global territories</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1;">
+        <h4 style="color:#FCD34D; margin-bottom:12px; font-size:13px; letter-spacing:.06em; text-transform:uppercase;">Compliance &amp; Governance</h4>
+        <div class="card" style="margin-bottom:10px; padding:14px 16px;">
+          <div style="font-size:13px; line-height:1.9;">
+            <div>🛡️ &nbsp;Configurable rules engine — medical affairs can edit rules without code deploys</div>
+            <div>📋 &nbsp;Full audit trail — every recommendation logged with HCP state snapshot</div>
+            <div>✅ &nbsp;Content approval workflow — new assets go through approval before entering library</div>
+            <div>🔒 &nbsp;GDPR / HIPAA-compliant data handling and access control</div>
+          </div>
+        </div>
+
+        <h4 style="color:#4ADE80; margin-bottom:12px; font-size:13px; letter-spacing:.06em; text-transform:uppercase; margin-top:16px;">Platform &amp; UX</h4>
+        <div class="card" style="padding:14px 16px;">
+          <div style="font-size:13px; line-height:1.9;">
+            <div>🔑 &nbsp;Auth + RBAC — rep login, manager view, medical affairs dashboard</div>
+            <div>📱 &nbsp;Mobile-optimised — reps often work on tablets in the field</div>
+            <div>📤 &nbsp;Direct CRM push — one-click to log recommendation as CRM activity</div>
+            <div>📧 &nbsp;Email integration — draft opens in Outlook/Gmail directly</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:.7;">
+        <div class="card teal-border" style="margin-bottom:14px;">
+          <h4 style="color:#2DD4BF; margin-bottom:10px;">What stays the same</h4>
+          <p style="font-size:13px;" class="muted">The <strong style="color:#fff;">core agent architecture</strong> — rules-first, retrieval-augmented, LLM reasoning — scales directly. The three-stage pipeline is the right design regardless of data volume or model sophistication.</p>
+        </div>
+        <div class="card green-border">
+          <h4 style="color:#4ADE80; margin-bottom:10px;">Immediate quick wins</h4>
+          <ul class="check-list" style="font-size:12px;">
+            <li>Add rep name personalisation to drafts</li>
+            <li>Export recommendation as PDF / email</li>
+            <li>Territory-level analytics dashboard</li>
+            <li>Batch recommendations for all HCPs</li>
+            <li>Scheduled weekly priority queue</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ SLIDE 15 — SUMMARY / QA ═══ -->
+  <div class="slide bg-title">
+    <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+      <div style="font-size:52px; margin-bottom:24px;">🤖</div>
+      <h1 style="font-size:42px; margin-bottom:20px;">Thank you</h1>
+      <p class="large muted" style="max-width:640px; margin-bottom:40px;">The prototype is live and demoable. Happy to walk through any scenario, discuss any design decision, or explore what a production version would look like.</p>
+
+      <div class="row" style="gap:24px; justify-content:center; flex-wrap:wrap; margin-bottom:40px;">
+        <div class="card" style="min-width:180px; text-align:center; padding:18px 24px;">
+          <div style="font-size:28px; margin-bottom:6px;">🛡️</div>
+          <h4 style="font-size:13px; margin-bottom:4px;">Rules-First</h4>
+          <p style="font-size:11px;" class="muted">Compliance guaranteed before any AI</p>
+        </div>
+        <div class="card" style="min-width:180px; text-align:center; padding:18px 24px;">
+          <div style="font-size:28px; margin-bottom:6px;">📚</div>
+          <h4 style="font-size:13px; margin-bottom:4px;">Approved Content Only</h4>
+          <p style="font-size:11px;" class="muted">No hallucinated assets</p>
+        </div>
+        <div class="card" style="min-width:180px; text-align:center; padding:18px 24px;">
+          <div style="font-size:28px; margin-bottom:6px;">🧠</div>
+          <h4 style="font-size:13px; margin-bottom:4px;">LLM Reasoning</h4>
+          <p style="font-size:11px;" class="muted">Traceable, grounded, consistent</p>
+        </div>
+        <div class="card" style="min-width:180px; text-align:center; padding:18px 24px;">
+          <div style="font-size:28px; margin-bottom:6px;">✍️</div>
+          <h4 style="font-size:13px; margin-bottom:4px;">Ready-to-Act</h4>
+          <p style="font-size:11px;" class="muted">Draft comms, not just flags</p>
+        </div>
+      </div>
+
+      <div class="card" style="background:rgba(37,99,235,.15); border-color:rgba(96,165,250,.3); max-width:560px; padding:18px 28px;">
+        <p style="font-size:14px; color:#93C5FD;">
+          <strong>Stack:</strong> React + FastAPI + Groq (Llama 3.3 70B) &nbsp;|&nbsp; <strong>Data:</strong> 25 HCPs · 15 Assets &nbsp;|&nbsp; <strong>Deployed:</strong> Vercel + Render
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- Navigation -->
+<div class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="go(-1)">‹</button>
+  <div class="slide-counter" id="counter">1 / 15</div>
+  <button class="nav-btn" id="nextBtn" onclick="go(1)">›</button>
+</div>
+
+<div class="key-hint">
+  <span class="key">←</span> <span class="key">→</span> to navigate &nbsp;|&nbsp; <span class="key">F</span> fullscreen
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide')
+  const total  = slides.length
+  let cur = 0
+
+  function show(n) {
+    slides[cur].classList.remove('active')
+    cur = (n + total) % total
+    slides[cur].classList.add('active')
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`
+    document.getElementById('progress').style.width = `${((cur + 1) / total) * 100}%`
+  }
+
+  function go(d) { show(cur + d) }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(1) }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                    { e.preventDefault(); go(-1) }
+    if (e.key === 'f' || e.key === 'F') { document.documentElement.requestFullscreen?.() }
+    if (e.key === 'Home') show(0)
+    if (e.key === 'End')  show(total - 1)
+  })
+
+  // Touch / swipe support
+  let tx = 0
+  document.addEventListener('touchstart', e => tx = e.touches[0].clientX)
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - tx
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1)
+  })
+
+  // Init progress bar
+  document.getElementById('progress').style.width = `${(1 / total) * 100}%`
+</script>
+</body>
+</html>
