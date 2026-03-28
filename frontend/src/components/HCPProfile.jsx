@@ -80,7 +80,7 @@ export default function HCPProfile({ hcp }) {
   const history = hcp.interactionHistory || []
 
   return (
-    <div className="flex-1 overflow-y-auto p-6 space-y-5 animate-fade-in">
+    <div className="h-full overflow-y-auto p-6 space-y-5 animate-fade-in">
 
       {/* Header Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">

@@ -3,446 +3,942 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HCP Copilot — How It Works</title>
+  <title>HCP Engagement Copilot — How It Works</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --navy: #0B1D3A;
-      --blue: #2563EB;
-      --blue-light: #EFF6FF;
-      --teal: #0D9488;
-      --teal-light: #F0FDF9;
-      --amber: #D97706;
+      --navy:        #0B1D3A;
+      --blue:        #2563EB;
+      --blue-light:  #EFF6FF;
+      --teal:        #0D9488;
+      --teal-light:  #F0FDF9;
+      --amber:       #D97706;
       --amber-light: #FFFBEB;
-      --rose: #E11D48;
-      --rose-light: #FFF1F2;
-      --slate: #64748B;
-      --bg: #F8FAFC;
-      --border: #E2E8F0;
-      --text: #0F172A;
+      --rose:        #E11D48;
+      --rose-light:  #FFF1F2;
+      --green:       #16A34A;
+      --green-light: #F0FDF4;
+      --purple:      #7C3AED;
+      --purple-light:#F5F3FF;
+      --slate:       #64748B;
+      --bg:          #F8FAFC;
+      --border:      #E2E8F0;
+      --text:        #0F172A;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.7;
-      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
     }
+
+    /* ── Nav ── */
+    .topnav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      display: flex; align-items: center; gap: 0;
+      height: 56px;
+    }
+    .topnav .logo {
+      display: flex; align-items: center; gap: 10px; margin-right: 36px;
+      font-weight: 800; font-size: 15px; color: var(--navy); text-decoration: none;
+    }
+    .topnav .logo-icon {
+      width: 30px; height: 30px; background: var(--blue); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px;
+    }
+    .nav-links { display: flex; gap: 4px; flex: 1; overflow-x: auto; }
+    .nav-links a {
+      padding: 6px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 500; color: var(--slate);
+      text-decoration: none; white-space: nowrap; transition: all .15s;
+    }
+    .nav-links a:hover { background: var(--blue-light); color: var(--blue); }
+
+    /* ── Page ── */
+    .page { max-width: 960px; margin: 0 auto; padding: 0 32px 80px; }
 
     /* ── Hero ── */
     .hero {
-      background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 60%, #1a3a6e 100%);
-      color: white;
-      padding: 80px 24px 90px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a6b 100%);
+      color: #fff; padding: 72px 48px; border-radius: 0 0 24px 24px; margin-bottom: 56px;
     }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.25) 0%, transparent 60%),
-                  radial-gradient(ellipse at 80% 20%, rgba(13,148,136,0.2) 0%, transparent 50%);
-    }
-    .hero-inner { position: relative; max-width: 760px; margin: 0 auto; }
-    .hero-badge {
+    .hero-tag {
       display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 100px; padding: 6px 16px; font-size: 12px; font-weight: 600;
-      letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px;
-      color: rgba(255,255,255,0.85);
+      background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px; padding: 5px 14px;
+      font-size: 12px; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; margin-bottom: 24px; color: #93C5FD;
     }
-    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: #34D399; display: inline-block; animation: blink 1.5s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 { font-size: 46px; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+    .hero h1 span { color: #60A5FA; }
+    .hero p { font-size: 18px; line-height: 1.65; color: rgba(255,255,255,.7); max-width: 640px; margin-bottom: 36px; }
+    .hero-stats { display: flex; gap: 32px; flex-wrap: wrap; }
+    .hero-stat { text-align: center; }
+    .hero-stat .n { font-size: 36px; font-weight: 900; color: #60A5FA; }
+    .hero-stat .l { font-size: 12px; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
 
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; margin-bottom: 20px; letter-spacing: -0.02em; }
-    .hero h1 em { font-style: normal; background: linear-gradient(90deg, #60A5FA, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { font-size: 1.1rem; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto; }
+    /* ── Section ── */
+    section { margin-bottom: 64px; scroll-margin-top: 72px; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 12px; border-radius: 999px; margin-bottom: 16px;
+    }
+    .section-tag.blue   { background: var(--blue-light);   color: var(--blue); }
+    .section-tag.teal   { background: var(--teal-light);   color: var(--teal); }
+    .section-tag.amber  { background: var(--amber-light);  color: var(--amber); }
+    .section-tag.green  { background: var(--green-light);  color: var(--green); }
+    .section-tag.rose   { background: var(--rose-light);   color: var(--rose); }
+    .section-tag.purple { background: var(--purple-light); color: var(--purple); }
+    .section-tag.navy   { background: #EEF2FF; color: var(--navy); }
 
-    /* ── Layout ── */
-    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
-    section { padding: 72px 0; }
-    section + section { border-top: 1px solid var(--border); }
+    section h2 { font-size: 30px; font-weight: 800; color: var(--navy); margin-bottom: 10px; line-height: 1.2; }
+    section .lead { font-size: 16px; color: var(--slate); margin-bottom: 28px; max-width: 680px; line-height: 1.65; }
 
-    h2 {
-      font-size: 1.75rem; font-weight: 800; color: var(--text);
-      letter-spacing: -0.02em; margin-bottom: 12px;
-    }
-    .section-label {
-      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
-    }
-    .lead { font-size: 1.05rem; color: var(--slate); margin-bottom: 36px; max-width: 680px; }
+    /* ── Divider ── */
+    .section-divider { border: none; border-top: 2px dashed var(--border); margin: 56px 0; }
 
-    /* ── Problem Cards ── */
-    .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .problem-card {
-      background: white; border: 1px solid var(--border); border-radius: 16px;
-      padding: 24px; position: relative; overflow: hidden;
-    }
-    .problem-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    }
-    .problem-card.p1::before { background: linear-gradient(90deg, #EF4444, #F97316); }
-    .problem-card.p2::before { background: linear-gradient(90deg, #8B5CF6, #3B82F6); }
-    .problem-card.p3::before { background: linear-gradient(90deg, #F59E0B, #EF4444); }
-    .problem-card .icon { font-size: 28px; margin-bottom: 14px; }
-    .problem-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-    .problem-card p { font-size: 0.875rem; color: var(--slate); line-height: 1.65; }
+    /* ── Cards ── */
+    .card-grid { display: grid; gap: 16px; }
+    .card-grid.cols2 { grid-template-columns: 1fr 1fr; }
+    .card-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
 
-    /* ── Analogy Box ── */
-    .analogy {
-      background: linear-gradient(135deg, #1E3A5F 0%, #0B1D3A 100%);
-      border-radius: 20px; padding: 40px 44px; color: white; margin: 40px 0;
-      position: relative; overflow: hidden;
+    .card {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 24px;
     }
-    .analogy::after {
-      content: '"';
-      position: absolute; right: 32px; top: -20px;
-      font-size: 160px; color: rgba(255,255,255,0.04); font-weight: 900; line-height: 1;
-    }
-    .analogy p { font-size: 1.1rem; line-height: 1.75; color: rgba(255,255,255,0.85); position: relative; }
-    .analogy strong { color: #60A5FA; }
-    .analogy-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+    .card.blue   { border-color: #BFDBFE; background: var(--blue-light); }
+    .card.teal   { border-color: #99F6E4; background: var(--teal-light); }
+    .card.amber  { border-color: #FDE68A; background: var(--amber-light); }
+    .card.green  { border-color: #BBF7D0; background: var(--green-light); }
+    .card.rose   { border-color: #FECDD3; background: var(--rose-light); }
+    .card.purple { border-color: #DDD6FE; background: var(--purple-light); }
+    .card.navy   { background: var(--navy); color: #fff; border-color: var(--navy); }
 
-    /* ── How it works steps ── */
+    .card-icon { font-size: 28px; margin-bottom: 12px; }
+    .card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--navy); }
+    .card.navy h3 { color: #fff; }
+    .card p, .card li { font-size: 14px; color: var(--slate); line-height: 1.6; }
+    .card.navy p, .card.navy li { color: rgba(255,255,255,.65); }
+    .card ul { padding-left: 18px; }
+    .card li { margin-bottom: 4px; }
+
+    /* ── Steps ── */
     .steps { display: flex; flex-direction: column; gap: 0; }
     .step {
-      display: flex; gap: 24px; align-items: flex-start; padding: 28px 0;
-      border-bottom: 1px dashed var(--border);
+      display: flex; gap: 20px; align-items: flex-start;
+      padding: 20px 0; border-bottom: 1px solid var(--border);
     }
     .step:last-child { border-bottom: none; }
     .step-num {
-      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 900; font-size: 1rem; color: white;
+      font-size: 14px; font-weight: 800; color: #fff;
     }
-    .s1 { background: linear-gradient(135deg, #3B82F6, #2563EB); }
-    .s2 { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
-    .s3 { background: linear-gradient(135deg, #0D9488, #0F766E); }
-    .s4 { background: linear-gradient(135deg, #F59E0B, #D97706); }
-    .s5 { background: linear-gradient(135deg, #10B981, #059669); }
-    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
-    .step-body p { font-size: 0.875rem; color: var(--slate); line-height: 1.7; }
-    .step-tag {
-      display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 100px;
-      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
-    }
-    .tag-blue { background: var(--blue-light); color: var(--blue); }
-    .tag-purple { background: #F5F3FF; color: #7C3AED; }
-    .tag-teal { background: var(--teal-light); color: var(--teal); }
-    .tag-amber { background: var(--amber-light); color: var(--amber); }
-    .tag-green { background: #F0FDF4; color: #16A34A; }
+    .step-body h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+    .step-body p  { font-size: 14px; color: var(--slate); }
 
-    /* ── Feature Highlights ── */
-    .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 8px; }
-    .highlight {
-      background: white; border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+    /* ── Rule rows ── */
+    .rule {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 16px 20px; border-radius: 12px; margin-bottom: 10px;
+      border-left: 4px solid;
     }
-    .highlight-icon { font-size: 22px; margin-bottom: 12px; }
-    .highlight h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
-    .highlight p { font-size: 0.82rem; color: var(--slate); line-height: 1.65; }
+    .rule.hard   { background: var(--rose-light);   border-color: var(--rose); }
+    .rule.warn   { background: var(--amber-light);  border-color: var(--amber); }
+    .rule.logic  { background: var(--blue-light);   border-color: var(--blue); }
+    .rule.pass   { background: var(--green-light);  border-color: var(--green); }
+    .rule-badge {
+      font-size: 11px; font-weight: 700; padding: 3px 10px;
+      border-radius: 999px; flex-shrink: 0; margin-top: 2px;
+    }
+    .rule.hard  .rule-badge { background: var(--rose);   color: #fff; }
+    .rule.warn  .rule-badge { background: var(--amber);  color: #fff; }
+    .rule.logic .rule-badge { background: var(--blue);   color: #fff; }
+    .rule.pass  .rule-badge { background: var(--green);  color: #fff; }
+    .rule h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .rule p  { font-size: 13px; color: var(--slate); }
 
-    /* ── Scenario Cards ── */
-    .scenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    /* ── Pipeline flow ── */
+    .pipeline {
+      display: flex; align-items: center; gap: 0;
+      background: #fff; border: 1.5px solid var(--border); border-radius: 16px;
+      overflow: hidden; margin-bottom: 24px;
+    }
+    .pipe-step { flex: 1; padding: 20px 16px; text-align: center; border-right: 1px solid var(--border); }
+    .pipe-step:last-child { border-right: none; }
+    .pipe-step .p-icon { font-size: 26px; margin-bottom: 8px; }
+    .pipe-step .p-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .pipe-step .p-desc  { font-size: 12px; color: var(--slate); }
+    .pipe-step.active { background: var(--navy); color: #fff; }
+    .pipe-step.active .p-desc { color: rgba(255,255,255,.55); }
+
+    /* ── Scenario block ── */
     .scenario {
-      border-radius: 14px; padding: 20px; border: 1px solid transparent;
+      border: 2px solid var(--border); border-radius: 20px;
+      overflow: hidden; margin-bottom: 32px;
     }
-    .scenario h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 6px; }
-    .scenario p { font-size: 0.8rem; line-height: 1.6; opacity: 0.85; }
-    .sc1 { background: #EFF6FF; border-color: #BFDBFE; color: #1E3A8A; }
-    .sc2 { background: #FEF3C7; border-color: #FDE68A; color: #78350F; }
-    .sc3 { background: #F0FDF4; border-color: #BBF7D0; color: #14532D; }
-    .sc4 { background: #FFF1F2; border-color: #FECDD3; color: #881337; }
-
-    /* ── Stack ── */
-    .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-    .stack-card {
-      background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px;
-      display: flex; flex-direction: column; gap: 8px;
+    .scenario-header {
+      padding: 24px 28px; display: flex; align-items: center; gap: 16px;
     }
-    .stack-card .stack-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate); }
-    .stack-card .stack-name { font-size: 1rem; font-weight: 800; color: var(--text); }
-    .stack-card .stack-why { font-size: 0.8rem; color: var(--slate); }
-
-    /* ── Footer ── */
-    footer {
-      background: var(--navy); color: rgba(255,255,255,0.4);
-      text-align: center; padding: 32px 24px; font-size: 13px;
+    .scenario-avatar {
+      width: 52px; height: 52px; border-radius: 14px;
+      font-size: 24px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    footer strong { color: rgba(255,255,255,0.7); }
+    .scenario-header h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+    .scenario-header p  { font-size: 13px; color: var(--slate); }
+    .scenario-badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+    .sbadge {
+      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+    }
+    .scenario-body { padding: 0 28px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .scenario-col h4 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; text-transform: uppercase; letter-spacing: .05em; }
+    .signal-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 14px; background: var(--bg); border-radius: 8px;
+      margin-bottom: 6px; border: 1px solid var(--border);
+    }
+    .signal-row .s-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .signal-row p { font-size: 13px; color: var(--slate); }
+    .signal-row strong { color: var(--navy); font-weight: 600; }
+    .action-box {
+      border-radius: 12px; padding: 16px; margin-bottom: 8px; border: 1.5px solid;
+    }
+    .action-box h5 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .action-box p  { font-size: 13px; color: var(--slate); }
 
-    /* ── Divider ── */
-    .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+    /* ── Assumptions box ── */
+    .assumptions {
+      margin: 20px 28px; padding: 14px 18px;
+      background: #FAFAFA; border: 1px dashed var(--border); border-radius: 10px;
+    }
+    .assumptions h5 { font-size: 12px; font-weight: 700; color: var(--slate); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+    .assumptions li { font-size: 12px; color: var(--slate); margin-bottom: 3px; padding-left: 16px; position: relative; }
+    .assumptions li::before { content: '—'; position: absolute; left: 0; color: #CBD5E1; }
 
-    blockquote {
-      border-left: 3px solid var(--blue); padding-left: 20px; margin: 24px 0;
-      color: var(--slate); font-size: 0.95rem; font-style: italic;
+    /* ── Stat chips ── */
+    .stat-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+    .stat-chip {
+      background: #fff; border: 1.5px solid var(--border); border-radius: 12px;
+      padding: 14px 20px; text-align: center; flex: 1; min-width: 100px;
+    }
+    .stat-chip .n { font-size: 30px; font-weight: 900; }
+    .stat-chip .l { font-size: 11px; color: var(--slate); margin-top: 2px; text-transform: uppercase; letter-spacing: .06em; }
+
+    /* ── Check list ── */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li {
+      padding: 6px 0 6px 24px; position: relative;
+      font-size: 14px; color: var(--slate);
+      border-bottom: 1px solid var(--border);
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .checklist.cross li::before { content: '✕'; color: var(--rose); }
+
+    /* ── Quote / callout ── */
+    .callout {
+      background: var(--navy); color: #fff; border-radius: 16px;
+      padding: 28px 32px; margin: 28px 0;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .callout-icon { font-size: 28px; flex-shrink: 0; }
+    .callout h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #60A5FA; }
+    .callout p  { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.65; }
+
+    /* ── Content asset ── */
+    .asset {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 18px; background: #fff; border: 1.5px solid var(--border);
+      border-radius: 12px; margin-bottom: 10px;
+    }
+    .asset-icon { font-size: 22px; flex-shrink: 0; }
+    .asset h5 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .asset p  { font-size: 12px; color: var(--slate); }
+    .asset .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+
+    @media (max-width: 700px) {
+      .card-grid.cols2, .card-grid.cols3 { grid-template-columns: 1fr; }
+      .scenario-body { grid-template-columns: 1fr; }
+      .pipeline { flex-direction: column; }
+      .pipe-step { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero h1 { font-size: 32px; }
+      .topnav { padding: 0 20px; }
+      .page { padding: 0 16px 60px; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── HERO ── -->
+<!-- ── Navigation ── -->
+<nav class="topnav">
+  <a class="logo" href="#">
+    <div class="logo-icon">🤖</div>
+    HCP Copilot
+  </a>
+  <div class="nav-links">
+    <a href="#data">The Data</a>
+    <a href="#how">How It Works</a>
+    <a href="#rules">Safety Rules</a>
+    <a href="#scenarios">4 Scenarios</a>
+    <a href="#decisions">Design Decisions</a>
+    <a href="#next">What's Next</a>
+  </div>
+</nav>
+
+<!-- ── Hero ── -->
 <div class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge"><span></span> Interview Assignment — Avegen</div>
-    <h1>How does the<br /><em>HCP Engagement Copilot</em> work?</h1>
-    <p>A plain-English guide to the problem we solved and the product we built — no technical background needed.</p>
+  <div class="hero-tag">💊 Pharma · AI · HCP Engagement</div>
+  <h1>HCP Engagement<br><span>Copilot</span></h1>
+  <p>
+    An AI-powered assistant that tells your sales team exactly <strong style="color:#fff;">who to contact, what to share, and when to hold back</strong> — using only approved content and hard compliance rules.
+  </p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n">25</div><div class="l">Doctor profiles</div></div>
+    <div class="hero-stat"><div class="n">15</div><div class="l">Approved assets</div></div>
+    <div class="hero-stat"><div class="n">5</div><div class="l">Compliance rules</div></div>
+    <div class="hero-stat"><div class="n">4</div><div class="l">Demo scenarios</div></div>
+    <div class="hero-stat"><div class="n">3</div><div class="l">Steps to output</div></div>
   </div>
 </div>
 
-<!-- ── THE WORLD ── -->
-<section>
-  <div class="container">
-    <div class="section-label">The World We're Solving For</div>
-    <h2>Pharma reps talk to thousands of doctors. Most of it goes nowhere.</h2>
-    <p class="lead">In the pharmaceutical industry, companies employ large teams whose job is to engage with doctors — called Healthcare Professionals (HCPs) — and share information about medicines, digital health tools, and clinical programs. But this process is broken in a very specific way.</p>
+<div class="page">
 
-    <div class="problem-grid">
-      <div class="problem-card p1">
-        <div class="icon">🎯</div>
-        <h3>They're guessing who to contact</h3>
-        <p>A rep might have 200 doctors in their territory. With no intelligent system to guide them, they go in order of a spreadsheet — not based on who's actually ready to engage.</p>
-      </div>
-      <div class="problem-card p2">
-        <div class="icon">📧</div>
-        <h3>They're sending the wrong thing</h3>
-        <p>One doctor loves email. Another never opens them. One prefers face-to-face meetings. One is a webinar person. But the same email goes to everyone anyway.</p>
-      </div>
-      <div class="problem-card p3">
-        <div class="icon">⚠️</div>
-        <h3>They're ignoring compliance rules</h3>
-        <p>Some doctors have opted out of contact. Some are in a regulatory blackout (e.g., after a drug side effect report). Contacting them anyway is not just ineffective — it's a legal risk.</p>
+<!-- ════════════════════════════════════════════
+     SECTION 1 — THE DATA
+════════════════════════════════════════════ -->
+<section id="data">
+  <div class="section-tag teal">📊 The Data We Built</div>
+  <h2>Everything starts with knowing your doctors</h2>
+  <p class="lead">
+    We created a realistic, synthetic dataset covering 25 doctors across 7 specialties and 8 countries. Think of it like a <strong>patient chart — but for each HCP</strong>. The richer the data, the smarter the recommendation.
+  </p>
+
+  <!-- Part 1: HCP Profiles -->
+  <div class="section-tag navy" style="margin-bottom:12px;">Part 1 · Doctor Profiles</div>
+  <div class="card-grid cols2" style="margin-bottom:24px;">
+    <div class="card teal">
+      <div class="card-icon">👨‍⚕️</div>
+      <h3>Who each doctor is</h3>
+      <ul>
+        <li>Name, specialty, hospital, city, country</li>
+        <li>How many patients they see per year</li>
+        <li>Therapy areas they actively work in</li>
+        <li>Whether they are a high, mid, or low prescriber</li>
+        <li>How they prefer to be contacted (email / phone / in-person / webinar)</li>
+      </ul>
+    </div>
+    <div class="card blue">
+      <div class="card-icon">🌍</div>
+      <h3>A global, diverse dataset</h3>
+      <ul>
+        <li><strong>Specialties:</strong> Endocrinology, HIV, Cardiology, Oncology, Mental Health, Respiratory, Maternal Health</li>
+        <li><strong>Countries:</strong> UK, India, UAE, Spain, Brazil, Japan, Nigeria, France, Ireland, Senegal</li>
+        <li><strong>Profile types:</strong> Newly identified doctors, actively engaged, churned, opted out, on compliance hold</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stat-chips">
+    <div class="stat-chip"><div class="n" style="color:var(--teal);">25</div><div class="l">HCP profiles</div></div>
+    <div class="stat-chip"><div class="n" style="color:var(--blue);">7</div><div class="l">Specialties</div></div>
+    <div class="stat-chip"><div class="n" style="color:var(--purple);">10</div><div class="l">Countries</div></div>
+    <div class="stat-chip"><div class="n" style="color:var(--amber);">4</div><div class="l">Channel types</div></div>
+    <div class="stat-chip"><div class="n" style="color:var(--green);">3</div><div class="l">Prescriber tiers</div></div>
+  </div>
+
+  <!-- Part 2: Engagement Signals -->
+  <div class="section-tag navy" style="margin-bottom:12px;">Part 2 · Engagement Signals &amp; History</div>
+  <p style="font-size:15px; color:var(--slate); margin-bottom:20px; max-width:680px;">
+    Beyond the profile, we track how each doctor has been <strong>responding over time</strong> — like monitoring a patient's lab results to see if things are improving or declining.
+  </p>
+
+  <div class="card-grid cols3" style="margin-bottom:24px;">
+    <div class="card blue">
+      <div class="card-icon">📧</div>
+      <h3>Digital signals</h3>
+      <ul>
+        <li>Number of emails opened</li>
+        <li>Whether they clicked through to read more</li>
+        <li>Webinars attended</li>
+        <li>Medical portal logins</li>
+      </ul>
+    </div>
+    <div class="card teal">
+      <div class="card-icon">📋</div>
+      <h3>Interaction history</h3>
+      <ul>
+        <li>Every past contact — email, call, meeting, webinar</li>
+        <li>Topic discussed and outcome (attended, opened, no-show, completed)</li>
+        <li>Days since last contact</li>
+      </ul>
+    </div>
+    <div class="card amber">
+      <div class="card-icon">📊</div>
+      <h3>Engagement score (0–10)</h3>
+      <ul>
+        <li><strong>7–10 → 🔥 Hot</strong> — act now</li>
+        <li><strong>4–6 → 🌤 Warm</strong> — nurture</li>
+        <li><strong>1–3 → ❄️ Cold</strong> — re-engage carefully</li>
+        <li><strong>None → 🆕 New</strong> — first contact</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Part 3: Content Library -->
+  <div class="section-tag navy" style="margin-bottom:12px;">Part 3 · Approved Content Library</div>
+  <p style="font-size:15px; color:var(--slate); margin-bottom:20px; max-width:680px;">
+    Every piece of content the system can recommend has been <strong>reviewed and pre-approved</strong>. The AI cannot suggest anything outside this library — eliminating the risk of sharing unapproved materials.
+  </p>
+
+  <div style="margin-bottom:16px;">
+    <div class="asset">
+      <div class="asset-icon">📄</div>
+      <div>
+        <h5>GLP-1 Receptor Agonist: 2026 Clinical Evidence Summary</h5>
+        <p>Phase III outcomes data for T2DM patients — approved for email and in-person use.</p>
+        <span class="tag" style="background:#EFF6FF; color:#2563EB;">Endocrinology</span>
+        <span class="tag" style="background:#F0FDF9; color:#0D9488;">Metabolics</span>
       </div>
     </div>
+    <div class="asset">
+      <div class="asset-icon">📄</div>
+      <div>
+        <h5>HIV Medication Adherence: HealthMachine Digital Pathway Guide</h5>
+        <p>Supports 100,000+ patients in England. Reduces missed doses by 34% at 6 months.</p>
+        <span class="tag" style="background:#FFF1F2; color:#E11D48;">HIV</span>
+        <span class="tag" style="background:#FFF1F2; color:#E11D48;">Infectious Disease</span>
+      </div>
+    </div>
+    <div class="asset">
+      <div class="asset-icon">📄</div>
+      <div>
+        <h5>SGLT2 Inhibitors in Heart Failure: 12-Month Real-World Outcomes</h5>
+        <p>28% reduction in CV hospitalisations. Approved for email, in-person, and webinar.</p>
+        <span class="tag" style="background:#FFF1F2; color:#be123c;">Cardiovascular</span>
+      </div>
+    </div>
+    <div class="asset">
+      <div class="asset-icon">📄</div>
+      <div>
+        <h5>Mental Health Digital Support Toolkit</h5>
+        <p>Digital CBT pathways, medication adherence tools, and referral criteria guide.</p>
+        <span class="tag" style="background:#F5F3FF; color:#7C3AED;">Mental Health</span>
+      </div>
+    </div>
+    <p style="font-size:13px; color:var(--slate); margin-top:8px;">+ 11 more approved assets covering Oncology, Respiratory, and Maternal Health</p>
+  </div>
 
-    <div class="analogy">
-      <div class="analogy-label">Think of it this way</div>
-      <p>
-        Imagine a <strong>sales rep at a bank</strong> calling every customer on Monday morning to sell them a credit card.
-        No data. No personalisation. Same script for everyone. They call a customer who already opted out.
-        They call someone who just complained. They don't call the customer who's been browsing loans for a week.
-        <br /><br />
-        That's exactly what's happening in pharma today. <strong>Our job was to build the intelligent layer that changes this.</strong>
-      </p>
+  <div class="callout">
+    <div class="callout-icon">🔒</div>
+    <div>
+      <h4>The golden rule of content</h4>
+      <p>The AI can only recommend from the pre-approved library. It cannot invent new clinical claims, reference unapproved studies, or create new materials on the fly. This constraint is hard-coded — not a guideline.</p>
     </div>
   </div>
 </section>
 
-<!-- ── THE SOLUTION ── -->
-<section>
-  <div class="container">
-    <div class="section-label">The Solution</div>
-    <h2>An AI Copilot that tells you exactly what to do next — and why.</h2>
-    <p class="lead">We built an intelligent assistant that a pharma rep opens in their browser. They click on any doctor's name, and the AI analyses everything it knows about that doctor — then tells the rep: <em>"Here's what you should do, how you should reach out, what content to send, and here's a draft message — ready to go."</em></p>
+<hr class="section-divider">
 
-    <blockquote>
-      The key word is "Copilot" — it's not replacing the rep. It's making the rep 10x smarter before every interaction.
-    </blockquote>
+<!-- ════════════════════════════════════════════
+     SECTION 2 — HOW IT WORKS
+════════════════════════════════════════════ -->
+<section id="how">
+  <div class="section-tag green">⚙️ How It Works</div>
+  <h2>Three steps from doctor profile to recommendation</h2>
+  <p class="lead">
+    When a rep selects a doctor, the system runs three stages automatically — <strong>always in the same order, every single time</strong>. No shortcuts, no guesswork.
+  </p>
+
+  <!-- Pipeline -->
+  <div class="pipeline">
+    <div class="pipe-step active">
+      <div class="p-icon">🛡️</div>
+      <div class="p-label" style="color:#60A5FA;">Step 1</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Safety Check</div>
+      <div class="p-desc">Compliance rules run first. Hard blocks stop everything.</div>
+    </div>
+    <div class="pipe-step">
+      <div class="p-icon">📚</div>
+      <div class="p-label" style="color:var(--blue);">Step 2</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Find Content</div>
+      <div class="p-desc">Match approved assets to this doctor's specialty and signals.</div>
+    </div>
+    <div class="pipe-step">
+      <div class="p-icon">🧠</div>
+      <div class="p-label" style="color:var(--green);">Step 3</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:4px;">AI Recommendation</div>
+      <div class="p-desc">AI reads everything, writes a reasoned recommendation and draft message.</div>
+    </div>
+    <div class="pipe-step">
+      <div class="p-icon">✍️</div>
+      <div class="p-label" style="color:var(--amber);">Output</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:4px;">Ready to Act</div>
+      <div class="p-desc">Draft email, call plan, or meeting prep note — personalised.</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">🏥</div>
+    <div>
+      <h4>Medical analogy</h4>
+      <p>Think of it like a <strong style="color:#fff;">clinical decision support system</strong>. A junior doctor checks protocols before prescribing. Our system checks rules before recommending. The senior doctor (the rep) always makes the final call — they can override the AI at any time.</p>
+    </div>
+  </div>
+
+  <!-- What the UI looks like -->
+  <h3 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:16px; margin-top:36px;">What the rep actually sees</h3>
+  <p style="font-size:15px; color:var(--slate); margin-bottom:20px;">A clean, three-panel screen. From selecting a doctor to having a draft email takes under 30 seconds.</p>
+
+  <div class="card-grid cols3">
+    <div class="card blue" style="border-top:4px solid var(--blue);">
+      <div class="card-icon">👥</div>
+      <h3>Left — Doctor List</h3>
+      <ul>
+        <li>All 25 doctors, searchable</li>
+        <li>Engagement status at a glance (Hot / Warm / Cold / New)</li>
+        <li>Filter by specialty</li>
+        <li>Compliance flags visible</li>
+        <li>One-click demo scenario shortcuts</li>
+      </ul>
+    </div>
+    <div class="card teal" style="border-top:4px solid var(--teal);">
+      <div class="card-icon">📋</div>
+      <h3>Centre — HCP Context View</h3>
+      <ul>
+        <li>Full doctor profile</li>
+        <li>Engagement score with signal breakdown</li>
+        <li>Complete interaction timeline</li>
+        <li>Compliance status and warnings</li>
+      </ul>
+      <p style="margin-top:10px; font-size:12px; color:var(--teal);">Everything a rep needs to understand this doctor <strong>before</strong> making a move.</p>
+    </div>
+    <div class="card green" style="border-top:4px solid var(--green);">
+      <div class="card-icon">🤖</div>
+      <h3>Right — AI Recommendation</h3>
+      <ul>
+        <li>Recommended action and channel</li>
+        <li>Specific approved content to use</li>
+        <li>Short rationale explaining the logic</li>
+        <li>Draft email or call plan — ready to copy</li>
+        <li>Assumptions transparently listed</li>
+      </ul>
+    </div>
   </div>
 </section>
 
-<!-- ── HOW IT WORKS ── -->
-<section>
-  <div class="container">
-    <div class="section-label">How It Works</div>
-    <h2>5 things happen the moment you click a doctor's name.</h2>
-    <p class="lead">Under the hood, the app runs a carefully designed pipeline — every step happens in order, every step matters.</p>
+<hr class="section-divider">
 
-    <div class="steps">
+<!-- ════════════════════════════════════════════
+     SECTION 3 — SAFETY RULES
+════════════════════════════════════════════ -->
+<section id="rules">
+  <div class="section-tag rose">🛡️ Safety &amp; Compliance</div>
+  <h2>Rules run before the AI. Always.</h2>
+  <p class="lead">
+    Before the AI is even involved, the system runs a checklist of compliance rules in priority order. <strong>Hard blocks are non-negotiable</strong> — the AI cannot override them, and neither can the rep.
+  </p>
 
-      <div class="step">
-        <div class="step-num s1">1</div>
-        <div class="step-body">
-          <h3>It builds a full picture of the doctor</h3>
-          <p>The system pulls together everything it knows: the doctor's specialty, which hospital they work at, how many patients they see, when they were last contacted, how they responded (did they open the email? attend the webinar? click through?), and what they prefer. This becomes a "context snapshot" for the AI to work with.</p>
-          <span class="step-tag tag-blue">Data Assembly</span>
+  <div class="rule hard">
+    <span class="rule-badge">🚫 HARD BLOCK</span>
+    <div>
+      <h4>Rule 1 — Doctor has opted out of all contact</h4>
+      <p>No outreach permitted via any channel. Complete stop. Overrides everything else in the system.</p>
+    </div>
+  </div>
+  <div class="rule hard">
+    <span class="rule-badge">🚫 HARD BLOCK</span>
+    <div>
+      <h4>Rule 2 — Compliance hold is active</h4>
+      <p>An adverse event has been reported, or a regulatory review is underway. Account frozen until medical affairs formally clears it.</p>
+    </div>
+  </div>
+  <div class="rule hard">
+    <span class="rule-badge">⏱ HARD BLOCK</span>
+    <div>
+      <h4>Rule 3 — Contacted within the last 3 days</h4>
+      <p>Minimum contact gap enforced. Like a physician giving a patient time to rest before a follow-up — some gaps are non-negotiable.</p>
+    </div>
+  </div>
+  <div class="rule warn">
+    <span class="rule-badge">⚠️ WARNING</span>
+    <div>
+      <h4>Rule 4 — Contacted within the last 4–7 days</h4>
+      <p>A soft warning is raised and shown to the rep. They are informed but can still proceed with care. The system flags this rather than blocking.</p>
+    </div>
+  </div>
+  <div class="rule logic">
+    <span class="rule-badge">📡 ROUTING</span>
+    <div>
+      <h4>Rule 5 — Which channel is appropriate for this doctor?</h4>
+      <p>System checks stated preference AND actual response history. If a doctor says they prefer email but never opens any, the system recommends switching to phone or in-person instead.</p>
+    </div>
+  </div>
+  <div class="rule pass">
+    <span class="rule-badge">✅ CLEAR</span>
+    <div>
+      <h4>All rules passed</h4>
+      <p>Only when all rules are checked does the system move to Step 2 — finding the right approved content for this doctor.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ════════════════════════════════════════════
+     SECTION 4 — THE 4 SCENARIOS
+════════════════════════════════════════════ -->
+<section id="scenarios">
+  <div class="section-tag purple">🎬 Demo Scenarios</div>
+  <h2>Four real-world situations — four different outcomes</h2>
+  <p class="lead">
+    These scenarios demonstrate that the system doesn't give a one-size-fits-all answer. It reads the specific context for each doctor and adapts its recommendation accordingly.
+  </p>
+
+  <!-- SCENARIO 1 -->
+  <div class="scenario" style="border-color:#BBF7D0;">
+    <div class="scenario-header" style="background:var(--green-light);">
+      <div class="scenario-avatar" style="background:#D1FAE5; border:2px solid #86EFAC;">🩺</div>
+      <div>
+        <h3>Scenario 1 — The Digitally Engaged Doctor</h3>
+        <p>Dr. Priya Sharma · Cardiologist · Kokilaben Hospital, Mumbai</p>
+        <div class="scenario-badges">
+          <span class="sbadge" style="background:#D1FAE5; color:#15803D;">🔥 Engagement Score: 9.2 / 10</span>
+          <span class="sbadge" style="background:#DBEAFE; color:#1D4ED8;">📱 Prefers webinars</span>
+          <span class="sbadge" style="background:#F0FDF4; color:#166534; border:1px solid #BBF7D0;">High prescriber</span>
         </div>
       </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-col">
+        <h4>📊 What the data shows</h4>
+        <div class="signal-row"><div class="s-icon">📺</div><p>Attended <strong>5 webinars</strong> — asked questions in Q&amp;A every single time</p></div>
+        <div class="signal-row"><div class="s-icon">📧</div><p>Opened <strong>11 emails</strong>, clicked through on SGLT2 content</p></div>
+        <div class="signal-row"><div class="s-icon">🖥</div><p>Logged into medical portal <strong>18 times</strong></p></div>
+        <div class="signal-row"><div class="s-icon">📅</div><p>Last contact: <strong>18 days ago</strong> (webinar) — good timing window</p></div>
+        <div class="signal-row"><div class="s-icon">✅</div><p>No compliance issues. Green light to proceed.</p></div>
+      </div>
+      <div class="scenario-col">
+        <h4>🤖 What the system recommends</h4>
+        <div class="action-box" style="background:var(--green-light); border-color:#86EFAC;">
+          <h5 style="color:var(--green);">Action: Invite to upcoming SGLT2 webinar</h5>
+          <p>She actively participates in Q&amp;A — webinar is her strongest channel. Perfect format match.</p>
+        </div>
+        <div class="action-box" style="background:var(--blue-light); border-color:#93C5FD;">
+          <h5 style="color:var(--blue);">Content: SGLT2 Heart Failure Real-World Outcomes</h5>
+          <p>She clicked on SGLT2 content last time — this is the natural next step in that conversation.</p>
+        </div>
+        <div class="action-box" style="background:#F8FAFC; border-color:var(--border);">
+          <h5 style="color:var(--navy);">Output: Draft personalised webinar invite email</h5>
+          <p>Ready to copy and send — references her previous attendance and Q&amp;A participation.</p>
+        </div>
+        <p style="font-size:13px; color:var(--green); font-weight:600; margin-top:8px;">Why this works: She is warm, engaged, and ready. The timing is right. The content matches exactly what she engaged with before. Highest probability next action.</p>
+      </div>
+    </div>
+    <div class="assumptions">
+      <h5>⚠️ Assumptions made visible</h5>
+      <ul>
+        <li>Engagement score based on last 3 months of signals only</li>
+        <li>Webinar preference inferred from attendance pattern — not explicitly stated</li>
+      </ul>
+    </div>
+  </div>
 
-      <div class="step">
-        <div class="step-num s2">2</div>
-        <div class="step-body">
-          <h3>It checks all the rules — before anything else</h3>
-          <p>This is the most important step, and it happens <em>before</em> the AI even gets involved. A dedicated rules engine checks: Has this doctor opted out? Are they in a compliance blackout? Were they contacted too recently? What channels are they allowed to be reached on? If any hard rule is violated, the system immediately says "Do Not Contact" and explains why. No AI guess-work on compliance — it's rule-based and deterministic.</p>
-          <span class="step-tag tag-purple">Rules Engine — Compliance First</span>
+  <!-- SCENARIO 2 -->
+  <div class="scenario" style="border-color:#FDE68A;">
+    <div class="scenario-header" style="background:var(--amber-light);">
+      <div class="scenario-avatar" style="background:#FEF3C7; border:2px solid #FCD34D;">😶</div>
+      <div>
+        <h3>Scenario 2 — The Low-Engagement / Churned Doctor</h3>
+        <p>Dr. David Park · Psychiatrist · Royal Edinburgh Hospital, Edinburgh</p>
+        <div class="scenario-badges">
+          <span class="sbadge" style="background:#FEF3C7; color:#B45309;">❄️ Engagement Score: 0.4 / 10</span>
+          <span class="sbadge" style="background:#FEF9C3; color:#92400E;">7+ months no engagement</span>
+          <span class="sbadge" style="background:#F1F5F9; color:#64748B; border:1px solid #E2E8F0;">Low prescriber</span>
         </div>
       </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-col">
+        <h4>📊 What the data shows</h4>
+        <div class="signal-row"><div class="s-icon">📅</div><p>Last meaningful contact: <strong>7+ months ago</strong></p></div>
+        <div class="signal-row"><div class="s-icon">❌</div><p>Registered for a webinar — <strong>did not attend</strong></p></div>
+        <div class="signal-row"><div class="s-icon">❌</div><p>Two recent emails sent — <strong>both unopened</strong></p></div>
+        <div class="signal-row"><div class="s-icon">📧</div><p>Opened one email 7 months ago — <strong>nothing since</strong></p></div>
+        <div class="signal-row"><div class="s-icon">⚠️</div><p>Status flagged: <strong>Churned</strong> — very low engagement, long gap</p></div>
+      </div>
+      <div class="scenario-col">
+        <h4>🤖 What the system recommends</h4>
+        <div class="action-box" style="background:var(--amber-light); border-color:#FCD34D;">
+          <h5 style="color:var(--amber);">Action: One soft re-engagement email only</h5>
+          <p>Low-commitment, warm tone. Do not push products or clinical data yet.</p>
+        </div>
+        <div class="action-box" style="background:var(--blue-light); border-color:#93C5FD;">
+          <h5 style="color:var(--blue);">Content: Mental Health Digital Support Toolkit</h5>
+          <p>Educational, not promotional. Matches his specialty. Keeps the tone supportive.</p>
+        </div>
+        <div class="action-box" style="background:#F8FAFC; border-color:var(--border);">
+          <h5 style="color:var(--navy);">Then: Monitor before next step</h5>
+          <p>If he opens → escalate to webinar invite. If not → reassess the channel entirely.</p>
+        </div>
+        <p style="font-size:13px; color:var(--amber); font-weight:600; margin-top:8px;">Why this works: Pushing a churned doctor with heavy sales content risks permanent disengagement. A gentle educational re-introduction gives the relationship a chance to warm up first.</p>
+      </div>
+    </div>
+    <div class="assumptions">
+      <h5>⚠️ Assumptions made visible</h5>
+      <ul>
+        <li>Churn may be due to role change or leave — no data to confirm</li>
+        <li>Email may be bouncing — this is not tracked in current data</li>
+        <li>Patient volume data is self-reported and may no longer be accurate</li>
+      </ul>
+    </div>
+  </div>
 
-      <div class="step">
-        <div class="step-num s3">3</div>
-        <div class="step-body">
-          <h3>It finds the most relevant approved content</h3>
-          <p>The company has a library of pre-approved materials — clinical study summaries, patient guides, webinar invites, product overviews. The system looks at the doctor's therapy area (e.g., HIV, Cardiovascular, Endocrinology) and their preferred channel (email, phone, in-person), then retrieves the top 3–4 most relevant approved assets. Crucially, it can only use approved content — nothing unapproved ever gets recommended.</p>
-          <span class="step-tag tag-teal">Content Retrieval — Approved Assets Only</span>
+  <!-- SCENARIO 3 -->
+  <div class="scenario" style="border-color:#DDD6FE;">
+    <div class="scenario-header" style="background:var(--purple-light);">
+      <div class="scenario-avatar" style="background:#EDE9FE; border:2px solid #C4B5FD;">🤝</div>
+      <div>
+        <h3>Scenario 3 — The Doctor Who Only Responds In Person</h3>
+        <p>Dr. James Okafor · HIV Specialist · Chelsea &amp; Westminster NHS Trust, London</p>
+        <div class="scenario-badges">
+          <span class="sbadge" style="background:#EDE9FE; color:#6D28D9;">🌤 Engagement Score: 3.5 / 10</span>
+          <span class="sbadge" style="background:#DBEAFE; color:#1E40AF;">🤝 In-person preference</span>
+          <span class="sbadge" style="background:#F0FDF4; color:#166534; border:1px solid #BBF7D0;">High prescriber</span>
         </div>
       </div>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-col">
+        <h4>📊 What the data shows</h4>
+        <div class="signal-row"><div class="s-icon">🤝</div><p><strong>3 completed in-person meetings</strong> in the last year — all positive outcomes</p></div>
+        <div class="signal-row"><div class="s-icon">📧</div><p>Only <strong>2 emails opened</strong> despite many sent — email is ineffective here</p></div>
+        <div class="signal-row"><div class="s-icon">📅</div><p>Last contact: <strong>42 days ago</strong> (in-person) — appropriate re-engagement window</p></div>
+        <div class="signal-row"><div class="s-icon">🌐</div><p>Highly influential in the HIV community across London</p></div>
+        <div class="signal-row"><div class="s-icon">✅</div><p>No compliance issues. Contact window clear.</p></div>
+      </div>
+      <div class="scenario-col">
+        <h4>🤖 What the system recommends</h4>
+        <div class="action-box" style="background:var(--purple-light); border-color:#C4B5FD;">
+          <h5 style="color:var(--purple);">Action: Schedule an in-person meeting</h5>
+          <p>His response history is clear — he engages in person, not digitally. Respect that.</p>
+        </div>
+        <div class="action-box" style="background:var(--blue-light); border-color:#93C5FD;">
+          <h5 style="color:var(--blue);">Content: HIV HealthMachine Pathway Guide (leave-behind)</h5>
+          <p>Approved for in-person use. Matches his specialty exactly. Physical format suits his style.</p>
+        </div>
+        <div class="action-box" style="background:var(--rose-light); border-color:#FCA5A5;">
+          <h5 style="color:var(--rose);">Warning: Do not send a cold email to confirm</h5>
+          <p>Use a phone call to book the meeting instead — emails are ignored by this doctor.</p>
+        </div>
+        <p style="font-size:13px; color:var(--purple); font-weight:600; margin-top:8px;">Why this works: Respecting <em>how</em> a doctor wants to engage is as important as <em>what</em> you say. Sending emails to someone who ignores them wastes time and signals inattentiveness.</p>
+      </div>
+    </div>
+    <div class="assumptions">
+      <h5>⚠️ Assumptions made visible</h5>
+      <ul>
+        <li>In-person preference confirmed by behaviour, not stated preference alone</li>
+        <li>Availability for meetings not known — rep must check with secretary</li>
+      </ul>
+    </div>
+  </div>
 
-      <div class="step">
-        <div class="step-num s4">4</div>
-        <div class="step-body">
-          <h3>The AI reasons through everything and makes a recommendation</h3>
-          <p>Now — and only now — does the AI (powered by Azure OpenAI GPT-4.1) get involved. It receives the doctor's full context, the rules engine output, and the retrieved content. It then produces: a specific recommended action (e.g., "Send Email"), a priority level, the right timing, which content piece to use, a draft email or call plan personalised to that doctor, a clear rationale explaining why, and a transparent list of assumptions it made.</p>
-          <span class="step-tag tag-amber">AI Reasoning — GPT-4.1</span>
+  <!-- SCENARIO 4 -->
+  <div class="scenario" style="border-color:#FECDD3;">
+    <div class="scenario-header" style="background:var(--rose-light);">
+      <div class="scenario-avatar" style="background:#FFE4E6; border:2px solid #FCA5A5;">⏸</div>
+      <div>
+        <h3>Scenario 4 — When the Right Move Is to Wait</h3>
+        <p>Dr. Leila Ahmadi · Endocrinologist · Mediclinic City Hospital, Dubai</p>
+        <div class="scenario-badges">
+          <span class="sbadge" style="background:#FEF3C7; color:#B45309;">🌤 Weak re-engagement signals</span>
+          <span class="sbadge" style="background:#FFE4E6; color:#BE123C;">⚠️ Hold outreach</span>
+          <span class="sbadge" style="background:#F1F5F9; color:#64748B; border:1px solid #E2E8F0;">Mid prescriber</span>
         </div>
       </div>
-
-      <div class="step">
-        <div class="step-num s5">5</div>
-        <div class="step-body">
-          <h3>The rep sees it all in one clean screen — and can act immediately</h3>
-          <p>Everything surfaces in a beautiful interface: the doctor's profile and engagement history on the left, the AI recommendation on the right. The rep can read the rationale, review the draft message, and copy it — all without leaving the screen. The whole process from click to recommendation takes about 5–10 seconds.</p>
-          <span class="step-tag tag-green">Frontend — React App</span>
+    </div>
+    <div class="scenario-body">
+      <div class="scenario-col">
+        <h4>📊 What the data shows</h4>
+        <div class="signal-row"><div class="s-icon">😴</div><p>Silent for <strong>5 months</strong> after the initial meeting</p></div>
+        <div class="signal-row"><div class="s-icon">📧</div><p>Re-contacted <strong>5 days ago</strong> with a re-engagement email</p></div>
+        <div class="signal-row"><div class="s-icon">👁</div><p><strong>Opened that email</strong> — but did not click through or take any action</p></div>
+        <div class="signal-row"><div class="s-icon">❌</div><p>Zero portal logins, zero webinar attendance in 6 months</p></div>
+        <div class="signal-row"><div class="s-icon">⚠️</div><p>Signals are <strong>ambiguous</strong> — one open, no follow-through</p></div>
+      </div>
+      <div class="scenario-col">
+        <h4>🤖 What the system recommends</h4>
+        <div class="action-box" style="background:var(--rose-light); border-color:#FCA5A5;">
+          <h5 style="color:var(--rose);">Recommendation: Hold — do not contact yet</h5>
+          <p>The re-engagement email was sent 5 days ago. It needs time to breathe before any follow-up.</p>
         </div>
+        <div class="action-box" style="background:var(--amber-light); border-color:#FCD34D;">
+          <h5 style="color:var(--amber);">Wait 7–10 more days, then reassess</h5>
+          <p>If she engages further (clicks, portal login) → move to warm approach. If still nothing → consider switching channels entirely.</p>
+        </div>
+        <div class="action-box" style="background:#F8FAFC; border-color:var(--border);">
+          <h5 style="color:var(--navy);">⚠️ Risk of pushing now</h5>
+          <p>Contacting again too soon after a weak re-engagement signal could trigger an opt-out — permanently closing this account.</p>
+        </div>
+        <p style="font-size:13px; color:var(--rose); font-weight:600; margin-top:8px;">Why this matters: The system recommends <em>waiting</em> — not because of a compliance rule, but because intelligent judgement says the risk of over-contacting outweighs the benefit of acting now. This is restraint by design.</p>
       </div>
-
+    </div>
+    <div class="assumptions">
+      <h5>⚠️ Assumptions made visible</h5>
+      <ul>
+        <li>Email open may have been accidental (preview pane) — not confirmed intent</li>
+        <li>No data on whether she shared the email with a colleague</li>
+        <li>Optimal wait time is estimated — real systems would use historical response patterns</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ── THE 4 SCENARIOS ── -->
-<section>
-  <div class="container">
-    <div class="section-label">Demo Scenarios Built In</div>
-    <h2>Four real-world situations the system handles.</h2>
-    <p class="lead">We designed 4 distinct scenarios to showcase the full range of the system's intelligence — from obvious outreach to knowing when to hold back.</p>
+<hr class="section-divider">
 
-    <div class="scenarios">
-      <div class="scenario sc1">
-        <h3>Digitally Engaged HCP</h3>
-        <p>A doctor who opens emails, attends webinars, and clicks on content. The system identifies the momentum and recommends a targeted follow-up with the most relevant clinical asset.</p>
+<!-- ════════════════════════════════════════════
+     SECTION 5 — DESIGN DECISIONS
+════════════════════════════════════════════ -->
+<section id="decisions">
+  <div class="section-tag navy">🏗 Design Decisions &amp; Tradeoffs</div>
+  <h2>Why we built it this way</h2>
+  <p class="lead">
+    Every design choice was made deliberately. Here are the key decisions, the reasoning behind them, and what we consciously left out.
+  </p>
+
+  <div class="card-grid cols2" style="margin-bottom:24px;">
+    <div class="card blue">
+      <div class="card-icon">🔒</div>
+      <h3>Rules before AI — always</h3>
+      <p><strong>Decision:</strong> Compliance logic is hard-coded in rules that run before the AI sees anything.</p>
+      <p style="margin-top:8px;"><strong>Why:</strong> AI models can make mistakes. Compliance cannot be probabilistic. A hard opt-out must be a hard stop — no edge cases, no exceptions.</p>
+    </div>
+    <div class="card teal">
+      <div class="card-icon">📚</div>
+      <h3>Approved content library only</h3>
+      <p><strong>Decision:</strong> The AI can only recommend from pre-approved, tagged assets.</p>
+      <p style="margin-top:8px;"><strong>Why:</strong> Pharma has strict rules about what can be shared with HCPs. This eliminates the risk of the AI suggesting off-label or unapproved materials — the most common compliance failure in AI-assisted sales tools.</p>
+    </div>
+    <div class="card green">
+      <div class="card-icon">👁</div>
+      <h3>Transparent rationale always shown</h3>
+      <p><strong>Decision:</strong> Every recommendation includes a written explanation of why.</p>
+      <p style="margin-top:8px;"><strong>Why:</strong> Reps need to trust and understand the output. If a manager asks "why did you contact this doctor?", the rep has a clear, defensible, auditable answer.</p>
+    </div>
+    <div class="card amber">
+      <div class="card-icon">🔍</div>
+      <h3>Missing data is made visible</h3>
+      <p><strong>Decision:</strong> Every recommendation lists its assumptions and knowledge gaps.</p>
+      <p style="margin-top:8px;"><strong>Why:</strong> Hiding uncertainty is dangerous. When reps know what the system doesn't know, they apply their own judgement to fill the gap — rather than over-trusting a black box.</p>
+    </div>
+  </div>
+
+  <div class="card rose">
+    <div class="card-icon">🚫</div>
+    <h3>What we deliberately left out</h3>
+    <ul class="checklist cross" style="margin-top:8px;">
+      <li>No live CRM integration — synthetic data only for this prototype</li>
+      <li>No trained predictive model — rules + AI reasoning is sufficient for the prototype stage</li>
+      <li>No A/B testing or feedback loops — would require live deployment to be meaningful</li>
+      <li>No multi-rep coordination — single-rep view is cleaner for the demo</li>
+      <li>No mobile app — desktop-first for the prototype, mobile would come in production</li>
+    </ul>
+    <p style="font-size:13px; color:var(--rose); margin-top:12px; font-weight:600;">Result: A lean, explainable, compliance-safe prototype that demonstrates the core workflow clearly — without over-engineering.</p>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ════════════════════════════════════════════
+     SECTION 6 — WHAT COMES NEXT
+════════════════════════════════════════════ -->
+<section id="next">
+  <div class="section-tag teal">🚀 What Comes Next</div>
+  <h2>From prototype to production</h2>
+  <p class="lead">
+    This prototype demonstrates the core workflow. Here is what the next phase would look like — in priority order.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num" style="background:var(--teal);">1</div>
+      <div class="step-body">
+        <h4>Connect to real data</h4>
+        <p>Live CRM integration (Veeva, Salesforce), real HCP prescribing data from IMS/IQVIA, live email open and click signals from marketing platforms, and a live compliance calendar from regulatory systems.</p>
       </div>
-      <div class="scenario sc2">
-        <h3>Low / Churned HCP</h3>
-        <p>A doctor who hasn't engaged in 7+ months. The system recommends a gentle re-engagement rather than a hard sales push — right tone, right content, right timing.</p>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background:var(--blue);">2</div>
+      <div class="step-body">
+        <h4>Smarter recommendations over time</h4>
+        <p>A feedback loop: did the rep act on the recommendation? Did the doctor respond positively? Use those outcomes to improve future scoring. The system gets better with every interaction.</p>
       </div>
-      <div class="scenario sc3">
-        <h3>F2F Preference HCP</h3>
-        <p>A doctor who ignores every email but responds to in-person meetings. The system overrides the default email approach and recommends a face-to-face meeting with a call prep guide.</p>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background:var(--green);">3</div>
+      <div class="step-body">
+        <h4>Team coordination</h4>
+        <p>Multiple reps managing overlapping territories, MSL and commercial team alignment, and a manager dashboard showing all HCPs across a region with priority flags.</p>
       </div>
-      <div class="scenario sc4">
-        <h3>Compliance Blackout</h3>
-        <p>A doctor flagged after an adverse event report. The system hard-blocks all outreach before the AI even runs — no guess-work, no risk. Compliance rules always win.</p>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background:var(--amber);">4</div>
+      <div class="step-body">
+        <h4>Full compliance audit trail</h4>
+        <p>Every recommendation logged with its full reasoning, content used, and rep action taken. Regulatory submission support for AI-assisted commercial decisions. Integration with pharmacovigilance reporting.</p>
       </div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background:var(--purple);">5</div>
+      <div class="step-body">
+        <h4>Medical affairs extension</h4>
+        <p>An MSL version focused on scientific exchange rather than commercial activity. KOL management, advisory board tracking, and conference planning and follow-up automation.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num" style="background:var(--rose);">6</div>
+      <div class="step-body">
+        <h4>Mobile-first for field reps</h4>
+        <p>Reps are in the field, not at desks. The next version would be a mobile app — pre-loaded with the day's priority doctor recommendations before leaving the office each morning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Closing callout -->
+  <div class="callout" style="margin-top:40px;">
+    <div class="callout-icon">🎯</div>
+    <div>
+      <h4>The core principle — unchanged from prototype to production</h4>
+      <p>The HCP Engagement Copilot is a <strong style="color:#fff;">reasoning and workflow tool</strong>, not a prediction engine. It gives every rep the intelligence of the best rep on the team — faster decisions, safer compliance, and a clear explanation for every move. The human stays in control.</p>
+    </div>
+  </div>
+
+  <!-- Summary chips -->
+  <div style="margin-top:36px;">
+    <h3 style="font-size:18px; font-weight:800; color:var(--navy); margin-bottom:16px;">In summary</h3>
+    <div class="stat-chips">
+      <div class="stat-chip"><div class="n" style="color:var(--teal);">25</div><div class="l">Doctor profiles</div></div>
+      <div class="stat-chip"><div class="n" style="color:var(--blue);">15</div><div class="l">Approved assets</div></div>
+      <div class="stat-chip"><div class="n" style="color:var(--rose);">5</div><div class="l">Compliance rules</div></div>
+      <div class="stat-chip"><div class="n" style="color:var(--purple);">3</div><div class="l">Steps to output</div></div>
+      <div class="stat-chip"><div class="n" style="color:var(--green);">4</div><div class="l">Demo scenarios</div></div>
+      <div class="stat-chip"><div class="n" style="color:var(--amber);">30s</div><div class="l">To a draft email</div></div>
     </div>
   </div>
 </section>
 
-<!-- ── WHAT MAKES IT SMART ── -->
-<section>
-  <div class="container">
-    <div class="section-label">What Makes This Different</div>
-    <h2>Three design decisions that set this apart.</h2>
-
-    <div class="highlights">
-      <div class="highlight">
-        <div class="highlight-icon">🛡️</div>
-        <h3>Rules run before AI — always</h3>
-        <p>Most AI products let the model decide everything. We deliberately separate compliance logic from AI reasoning. Hard rules are code, not prompts. An AI can hallucinate; a rule cannot.</p>
-      </div>
-      <div class="highlight">
-        <div class="highlight-icon">🤫</div>
-        <h3>Sometimes the right answer is "wait"</h3>
-        <p>The system is designed to recommend inaction when inaction is correct. A churned doctor, an over-contacted doctor, a recently met doctor — in each case, the AI may say "don't reach out yet." That restraint is a feature, not a bug.</p>
-      </div>
-      <div class="highlight">
-        <div class="highlight-icon">🔍</div>
-        <h3>Transparent reasoning, always</h3>
-        <p>Every recommendation comes with a rationale, a list of assumptions the AI made, and a list of data it didn't have. The rep always knows why — and can push back intelligently.</p>
-      </div>
-      <div class="highlight">
-        <div class="highlight-icon">📋</div>
-        <h3>Only approved content, ever</h3>
-        <p>In pharma, every piece of communication must go through medical-legal review. The system only retrieves pre-approved assets from the content library. The AI never invents content or suggests unapproved material.</p>
-      </div>
-      <div class="highlight">
-        <div class="highlight-icon">🏥</div>
-        <h3>Clinically grounded data</h3>
-        <p>The 25 synthetic HCPs span real therapy areas Avegen works in — HIV, Cardiovascular, Oncology, Endocrinology, Maternal Health. The profiles reflect how real HCPs actually behave, not generic mock data.</p>
-      </div>
-      <div class="highlight">
-        <div class="highlight-icon">⚡</div>
-        <h3>Built to be practical</h3>
-        <p>No over-engineering. No machine learning model. No complex infrastructure. A lean rules engine + content matching + a single well-designed AI prompt. Simple, explainable, and production-worthy.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── TECH STACK ── -->
-<section>
-  <div class="container">
-    <div class="section-label">What It's Built With</div>
-    <h2>A lean, modern stack — nothing unnecessary.</h2>
-    <p class="lead">Every technology choice was made for a reason. Here's what's under the hood and why.</p>
-
-    <div class="stack-grid">
-      <div class="stack-card">
-        <div class="stack-label">Frontend</div>
-        <div class="stack-name">React</div>
-        <div class="stack-why">Fast to build, easy to demo live, looks great in a browser presentation.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-label">Backend</div>
-        <div class="stack-name">FastAPI (Python)</div>
-        <div class="stack-why">Lightweight server that connects the frontend to the AI and data. Python is the natural language for AI work.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-label">AI Model</div>
-        <div class="stack-name">Azure OpenAI GPT-4.1</div>
-        <div class="stack-why">The most capable model available via Azure — enterprise-grade, compliant, and produces structured, reliable outputs.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-label">Styling</div>
-        <div class="stack-name">Tailwind CSS</div>
-        <div class="stack-why">Builds beautiful, consistent interfaces without writing a single line of custom CSS from scratch.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-label">Data</div>
-        <div class="stack-name">JSON Files</div>
-        <div class="stack-why">Transparent, readable, and inspectable. No database needed for a prototype — the data is the demo.</div>
-      </div>
-      <div class="stack-card">
-        <div class="stack-label">Content Matching</div>
-        <div class="stack-name">Tag-based Retrieval</div>
-        <div class="stack-why">Simple keyword and therapy-area matching to find relevant content. Transparent, explainable, no black-box.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── THE BIG PICTURE ── -->
-<section>
-  <div class="container">
-    <div class="section-label">The Bigger Picture</div>
-    <h2>This is a prototype. Here's what it could become.</h2>
-    <p class="lead">We built this in 2 days as a focused proof-of-concept. The thinking behind it, however, is production-grade. Here's the natural evolution:</p>
-
-    <div class="analogy">
-      <div class="analogy-label">The Vision</div>
-      <p>
-        Connect this to a real CRM like Salesforce or Veeva — and now every rep in the country has an intelligent co-pilot before every interaction.<br /><br />
-        Connect it to real engagement data from emails, portals, and events — and the recommendations get sharper with every interaction.<br /><br />
-        <strong>Plug it into Avegen's HealthMachine platform</strong> — and this becomes the engagement intelligence layer for every pharma company that builds digital health solutions on HealthMachine.
-        <br /><br />
-        That's the unlock. Not just a prototype — a new product capability.
-      </p>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>Built for the <strong>Avegen interview assignment</strong> · HCP Engagement Copilot · March 2026</p>
-  <p style="margin-top:8px;">Rules-first · AI-assisted · Compliance-aware · Clinically grounded</p>
-</footer>
-
+</div><!-- /page -->
 </body>
 </html>

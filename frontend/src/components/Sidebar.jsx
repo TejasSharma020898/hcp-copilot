@@ -145,8 +145,8 @@ export default function Sidebar({ hcps, selectedId, onSelect }) {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-1.5">
-                    <p className={`text-sm font-medium truncate ${isSelected ? 'text-white' : 'text-white/85'}`}>
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <p className={`text-sm font-medium truncate min-w-0 flex-1 ${isSelected ? 'text-white' : 'text-white/85'}`}>
                       {hcp.name}
                     </p>
                     {isBlocked && (
