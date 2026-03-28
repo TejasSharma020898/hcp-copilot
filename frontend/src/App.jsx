@@ -109,6 +109,7 @@ export default function App() {
       <CopilotPanel
         hcpId={selectedId}
         hcpName={hcpDetail?.name}
+        hcpDetail={hcpDetail}
       />
     </div>
   )

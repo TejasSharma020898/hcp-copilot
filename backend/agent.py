@@ -23,9 +23,15 @@ CRITICAL RULES:
 1. Only recommend content from the PROVIDED content library — never invent content.
 2. All guardrail decisions have already been made by the rules engine before you — trust them.
 3. Be specific and clinically grounded. The user is a commercial or medical affairs professional speaking to doctors.
-4. Always explain WHY — the rationale must be logical and traceable to the HCP data.
-5. Flag assumptions and missing data transparently.
-6. If the situation calls for restraint (recent contact, low engagement, churned), recommend waiting or a lighter touch.
+4. Flag assumptions and missing data transparently.
+5. If the situation calls for restraint (recent contact, low engagement, churned), recommend waiting or a lighter touch.
+
+RATIONALE QUALITY — THIS IS THE MOST IMPORTANT FIELD:
+The rationale must answer THREE specific questions, each grounded in the actual data provided:
+  (a) WHY this channel? — Cite the specific signal. e.g. "Email was chosen because this HCP has opened X emails recently and clicked through on Y content" OR "F2F was chosen because email open rate is near zero despite Z prior emails sent."
+  (b) WHY this content? — Cite the interaction history or therapy area match. e.g. "The GLP-1 evidence summary was selected because the HCP's last webinar was on GLP-1 Receptor Agonists X days ago and they clicked through on metabolics content previously."
+  (c) WHY now / this timing? — Cite the days since last contact and engagement window. e.g. "At X days since last contact, this is within the optimal re-engagement window" OR "The high engagement score of Y/10 — driven by Z email opens and W webinar attendances — signals strong readiness."
+Write the rationale as 3–4 connected sentences. Never use vague phrases like "is a logical next step" or "makes sense given the profile". Every claim must point to a specific data point.
 
 You must respond ONLY with valid JSON matching this exact schema:
 {
@@ -38,7 +44,7 @@ You must respond ONLY with valid JSON matching this exact schema:
     {
       "id": "<asset id>",
       "title": "<asset title>",
-      "reason": "<one sentence explaining why this asset fits this HCP>"
+      "reason": "<one sentence explaining why this asset fits this HCP, citing a specific prior interaction or therapy area>"
     }
   ],
   "draft_communication": {
@@ -46,7 +52,7 @@ You must respond ONLY with valid JSON matching this exact schema:
     "subject": "<email subject or call title>",
     "body": "<full draft — personalized, professional, concise. For email: 150-200 words. For call plan: structured bullet points.>"
   },
-  "rationale": "<2-3 sentences explaining the recommendation, grounded in the HCP's data>",
+  "rationale": "<3-4 sentences answering: WHY this channel (cite signal), WHY this content (cite history/match), WHY this timing (cite days since contact and engagement score breakdown)>",
   "assumptions": ["<assumption 1>", "<assumption 2>"],
   "missing_data_flags": ["<flag 1>", "<flag 2>"]
 }"""
@@ -68,6 +74,18 @@ def build_hcp_context_prompt(hcp: dict, rules_result: dict, content_assets: list
 
     assets_text = format_assets_for_prompt(content_assets)
 
+    # Compute score component contributions for transparency
+    email_opens     = signals.get('emailOpens', 0)
+    webinar_att     = signals.get('webinarAttendance', 0)
+    portal_logins   = signals.get('portalLogins', 0)
+    clicked_count   = sum(1 for h in history if "clicked" in h.get("outcome", ""))
+    score_breakdown = (
+        f"Email opens: {email_opens} (contributes {round(min(email_opens,10)*0.4,1)} pts) | "
+        f"Webinar attendance: {webinar_att} (contributes {round(min(webinar_att,5)*0.8,1)} pts) | "
+        f"Portal logins: {portal_logins} (contributes {round(min(portal_logins,15)*0.2,1)} pts) | "
+        f"Click-throughs in history: {clicked_count} (contributes {round(min(clicked_count,3)*0.5,1)} pts)"
+    )
+
     return f"""
 === HCP PROFILE ===
 Name: {hcp['name']}
@@ -82,11 +100,13 @@ HCP Notes: {hcp.get('notes', 'None')}
 === ENGAGEMENT STATUS ===
 Status: {hcp_status.upper()}
 Engagement Score: {engagement_score}/10
+Score Breakdown: {score_breakdown}
 Days Since Last Contact: {days_since if days_since is not None else 'Never contacted'}
 Last Interaction: {hcp.get('lastInteractionDate', 'N/A')} via {hcp.get('lastInteractionType', 'N/A')}
-Email Opens (recent): {signals.get('emailOpens', 0)}
-Webinar Attendance (recent): {signals.get('webinarAttendance', 0)}
-Portal Logins (recent): {signals.get('portalLogins', 0)}
+Email Opens (recent): {email_opens}
+Webinar Attendance (recent): {webinar_att}
+Portal Logins (recent): {portal_logins}
+Click-throughs in history: {clicked_count}
 
 === INTERACTION HISTORY (most recent first) ===
 {history_text}

@@ -59,7 +59,13 @@ function Skeleton() {
   )
 }
 
-export default function CopilotPanel({ hcpId, hcpName }) {
+function hcpEngagementSignals(rec, key) {
+  if (!rec._signals) return 0
+  if (key === 'clickThroughs') return rec._signals.clickThroughs || 0
+  return rec._signals[key] || 0
+}
+
+export default function CopilotPanel({ hcpId, hcpName, hcpDetail }) {
   const [rec, setRec] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -73,6 +79,17 @@ export default function CopilotPanel({ hcpId, hcpName }) {
     setShowAssumptions(false)
     try {
       const data = await fetchRecommendation(hcpId)
+      // Attach signals from hcpDetail so the breakdown UI can render them
+      if (hcpDetail?.engagementSignals) {
+        const s = hcpDetail.engagementSignals
+        const clicks = (hcpDetail.interactionHistory || []).filter(h => h.outcome?.includes('clicked')).length
+        data._signals = {
+          emailOpens:       s.emailOpens || 0,
+          webinarAttendance: s.webinarAttendance || 0,
+          portalLogins:     s.portalLogins || 0,
+          clickThroughs:    clicks,
+        }
+      }
       setRec(data)
     } catch (e) {
       setError(e.message || 'Failed to generate recommendation.')
@@ -194,7 +211,7 @@ export default function CopilotPanel({ hcpId, hcpName }) {
             </div>
 
             {/* HCP + Engagement Status */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {rec.hcp_status && (
                 <span className="px-2.5 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg font-medium capitalize">
                   Status: {rec.hcp_status.replace('-', ' ')}
@@ -211,6 +228,37 @@ export default function CopilotPanel({ hcpId, hcpName }) {
                 </span>
               )}
             </div>
+
+            {/* Engagement Score Breakdown */}
+            {rec.engagement_score !== undefined && (
+              <div className="p-3.5 bg-slate-50 border border-slate-100 rounded-xl">
+                <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">
+                  How the engagement score is calculated
+                </p>
+                <div className="space-y-2">
+                  {[
+                    { label: 'Email opens', value: hcpEngagementSignals(rec, 'emailOpens'), max: 10, weight: 0.4, color: 'bg-blue-400' },
+                    { label: 'Webinar attendance', value: hcpEngagementSignals(rec, 'webinarAttendance'), max: 5, weight: 0.8, color: 'bg-orange-400' },
+                    { label: 'Portal logins', value: hcpEngagementSignals(rec, 'portalLogins'), max: 15, weight: 0.2, color: 'bg-violet-400' },
+                    { label: 'Content click-throughs', value: hcpEngagementSignals(rec, 'clickThroughs'), max: 3, weight: 0.5, color: 'bg-emerald-400' },
+                  ].map(({ label, value, max, weight, color }) => (
+                    <div key={label}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[11px] text-slate-500">{label}</span>
+                        <span className="text-[11px] font-semibold text-slate-600">{value} → {(Math.min(value, max) * weight).toFixed(1)} pts</span>
+                      </div>
+                      <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min((value / max) * 100, 100)}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2.5 pt-2 border-t border-slate-200">
+                  Total: <strong className="text-slate-600">{rec.engagement_score}/10</strong>
+                  {rec.engagement_score >= 7 ? ' — 🔥 Hot: act now' : rec.engagement_score >= 4 ? ' — 🌤 Warm: nurture' : ' — ❄️ Cold: re-engage carefully'}
+                </p>
+              </div>
+            )}
 
             {/* Rationale */}
             <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
@@ -331,7 +379,7 @@ export default function CopilotPanel({ hcpId, hcpName }) {
 
       {/* Footer */}
       <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
-        <p className="text-[10px] text-slate-300">Powered by Azure OpenAI GPT-4.1</p>
+        <p className="text-[10px] text-slate-300">Powered by Groq · Llama 3.3 70B</p>
         <p className="text-[10px] text-slate-300">Rules-first · RAG-enhanced · Compliant</p>
       </div>
     </aside>
