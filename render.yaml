@@ -6,13 +6,9 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: AZURE_OPENAI_API_KEY
+      - key: GROQ_API_KEY
         sync: false
-      - key: AZURE_OPENAI_ENDPOINT
-        sync: false
-      - key: AZURE_OPENAI_DEPLOYMENT_NAME
-        sync: false
-      - key: AZURE_OPENAI_API_VERSION
-        value: 2024-12-01-preview
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
       - key: ALLOWED_ORIGINS
         sync: false

@@ -1,19 +1,18 @@
 import json
 import os
 from datetime import date
-from openai import AzureOpenAI
+from openai import OpenAI
 from dotenv import load_dotenv
 from rules_engine import apply_rules, calculate_days_since_contact
 from content_retriever import retrieve_relevant_content, format_assets_for_prompt
 
 load_dotenv()
 
-client = AzureOpenAI(
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION", "2024-12-01-preview"),
+client = OpenAI(
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1",
 )
-DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT_NAME", "gpt-4.1")
+DEPLOYMENT = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
 
 
 SYSTEM_PROMPT = """You are an HCP Engagement Copilot for a pharmaceutical digital health company.
