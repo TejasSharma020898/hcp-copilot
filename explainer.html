@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HCP Copilot — How It Works</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #0B1D3A;
+      --blue: #2563EB;
+      --blue-light: #EFF6FF;
+      --teal: #0D9488;
+      --teal-light: #F0FDF9;
+      --amber: #D97706;
+      --amber-light: #FFFBEB;
+      --rose: #E11D48;
+      --rose-light: #FFF1F2;
+      --slate: #64748B;
+      --bg: #F8FAFC;
+      --border: #E2E8F0;
+      --text: #0F172A;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 60%, #1a3a6e 100%);
+      color: white;
+      padding: 80px 24px 90px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(37,99,235,0.25) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(13,148,136,0.2) 0%, transparent 50%);
+    }
+    .hero-inner { position: relative; max-width: 760px; margin: 0 auto; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 100px; padding: 6px 16px; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 24px;
+      color: rgba(255,255,255,0.85);
+    }
+    .hero-badge span { width: 6px; height: 6px; border-radius: 50%; background: #34D399; display: inline-block; animation: blink 1.5s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 900; line-height: 1.15; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .hero h1 em { font-style: normal; background: linear-gradient(90deg, #60A5FA, #34D399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { font-size: 1.1rem; color: rgba(255,255,255,0.65); max-width: 560px; margin: 0 auto; }
+
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 72px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    h2 {
+      font-size: 1.75rem; font-weight: 800; color: var(--text);
+      letter-spacing: -0.02em; margin-bottom: 12px;
+    }
+    .section-label {
+      display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
+    }
+    .lead { font-size: 1.05rem; color: var(--slate); margin-bottom: 36px; max-width: 680px; }
+
+    /* ── Problem Cards ── */
+    .problem-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .problem-card {
+      background: white; border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; position: relative; overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .problem-card.p1::before { background: linear-gradient(90deg, #EF4444, #F97316); }
+    .problem-card.p2::before { background: linear-gradient(90deg, #8B5CF6, #3B82F6); }
+    .problem-card.p3::before { background: linear-gradient(90deg, #F59E0B, #EF4444); }
+    .problem-card .icon { font-size: 28px; margin-bottom: 14px; }
+    .problem-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .problem-card p { font-size: 0.875rem; color: var(--slate); line-height: 1.65; }
+
+    /* ── Analogy Box ── */
+    .analogy {
+      background: linear-gradient(135deg, #1E3A5F 0%, #0B1D3A 100%);
+      border-radius: 20px; padding: 40px 44px; color: white; margin: 40px 0;
+      position: relative; overflow: hidden;
+    }
+    .analogy::after {
+      content: '"';
+      position: absolute; right: 32px; top: -20px;
+      font-size: 160px; color: rgba(255,255,255,0.04); font-weight: 900; line-height: 1;
+    }
+    .analogy p { font-size: 1.1rem; line-height: 1.75; color: rgba(255,255,255,0.85); position: relative; }
+    .analogy strong { color: #60A5FA; }
+    .analogy-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+
+    /* ── How it works steps ── */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex; gap: 24px; align-items: flex-start; padding: 28px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1rem; color: white;
+    }
+    .s1 { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+    .s2 { background: linear-gradient(135deg, #8B5CF6, #7C3AED); }
+    .s3 { background: linear-gradient(135deg, #0D9488, #0F766E); }
+    .s4 { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .s5 { background: linear-gradient(135deg, #10B981, #059669); }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .step-body p { font-size: 0.875rem; color: var(--slate); line-height: 1.7; }
+    .step-tag {
+      display: inline-block; margin-top: 10px; padding: 3px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    }
+    .tag-blue { background: var(--blue-light); color: var(--blue); }
+    .tag-purple { background: #F5F3FF; color: #7C3AED; }
+    .tag-teal { background: var(--teal-light); color: var(--teal); }
+    .tag-amber { background: var(--amber-light); color: var(--amber); }
+    .tag-green { background: #F0FDF4; color: #16A34A; }
+
+    /* ── Feature Highlights ── */
+    .highlights { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 8px; }
+    .highlight {
+      background: white; border: 1px solid var(--border); border-radius: 14px; padding: 22px;
+    }
+    .highlight-icon { font-size: 22px; margin-bottom: 12px; }
+    .highlight h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+    .highlight p { font-size: 0.82rem; color: var(--slate); line-height: 1.65; }
+
+    /* ── Scenario Cards ── */
+    .scenarios { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .scenario {
+      border-radius: 14px; padding: 20px; border: 1px solid transparent;
+    }
+    .scenario h3 { font-size: 0.875rem; font-weight: 700; margin-bottom: 6px; }
+    .scenario p { font-size: 0.8rem; line-height: 1.6; opacity: 0.85; }
+    .sc1 { background: #EFF6FF; border-color: #BFDBFE; color: #1E3A8A; }
+    .sc2 { background: #FEF3C7; border-color: #FDE68A; color: #78350F; }
+    .sc3 { background: #F0FDF4; border-color: #BBF7D0; color: #14532D; }
+    .sc4 { background: #FFF1F2; border-color: #FECDD3; color: #881337; }
+
+    /* ── Stack ── */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+    .stack-card {
+      background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .stack-card .stack-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--slate); }
+    .stack-card .stack-name { font-size: 1rem; font-weight: 800; color: var(--text); }
+    .stack-card .stack-why { font-size: 0.8rem; color: var(--slate); }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--navy); color: rgba(255,255,255,0.4);
+      text-align: center; padding: 32px 24px; font-size: 13px;
+    }
+    footer strong { color: rgba(255,255,255,0.7); }
+
+    /* ── Divider ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    blockquote {
+      border-left: 3px solid var(--blue); padding-left: 20px; margin: 24px 0;
+      color: var(--slate); font-size: 0.95rem; font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span></span> Interview Assignment — Avegen</div>
+    <h1>How does the<br /><em>HCP Engagement Copilot</em> work?</h1>
+    <p>A plain-English guide to the problem we solved and the product we built — no technical background needed.</p>
+  </div>
+</div>
+
+<!-- ── THE WORLD ── -->
+<section>
+  <div class="container">
+    <div class="section-label">The World We're Solving For</div>
+    <h2>Pharma reps talk to thousands of doctors. Most of it goes nowhere.</h2>
+    <p class="lead">In the pharmaceutical industry, companies employ large teams whose job is to engage with doctors — called Healthcare Professionals (HCPs) — and share information about medicines, digital health tools, and clinical programs. But this process is broken in a very specific way.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card p1">
+        <div class="icon">🎯</div>
+        <h3>They're guessing who to contact</h3>
+        <p>A rep might have 200 doctors in their territory. With no intelligent system to guide them, they go in order of a spreadsheet — not based on who's actually ready to engage.</p>
+      </div>
+      <div class="problem-card p2">
+        <div class="icon">📧</div>
+        <h3>They're sending the wrong thing</h3>
+        <p>One doctor loves email. Another never opens them. One prefers face-to-face meetings. One is a webinar person. But the same email goes to everyone anyway.</p>
+      </div>
+      <div class="problem-card p3">
+        <div class="icon">⚠️</div>
+        <h3>They're ignoring compliance rules</h3>
+        <p>Some doctors have opted out of contact. Some are in a regulatory blackout (e.g., after a drug side effect report). Contacting them anyway is not just ineffective — it's a legal risk.</p>
+      </div>
+    </div>
+
+    <div class="analogy">
+      <div class="analogy-label">Think of it this way</div>
+      <p>
+        Imagine a <strong>sales rep at a bank</strong> calling every customer on Monday morning to sell them a credit card.
+        No data. No personalisation. Same script for everyone. They call a customer who already opted out.
+        They call someone who just complained. They don't call the customer who's been browsing loans for a week.
+        <br /><br />
+        That's exactly what's happening in pharma today. <strong>Our job was to build the intelligent layer that changes this.</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE SOLUTION ── -->
+<section>
+  <div class="container">
+    <div class="section-label">The Solution</div>
+    <h2>An AI Copilot that tells you exactly what to do next — and why.</h2>
+    <p class="lead">We built an intelligent assistant that a pharma rep opens in their browser. They click on any doctor's name, and the AI analyses everything it knows about that doctor — then tells the rep: <em>"Here's what you should do, how you should reach out, what content to send, and here's a draft message — ready to go."</em></p>
+
+    <blockquote>
+      The key word is "Copilot" — it's not replacing the rep. It's making the rep 10x smarter before every interaction.
+    </blockquote>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2>5 things happen the moment you click a doctor's name.</h2>
+    <p class="lead">Under the hood, the app runs a carefully designed pipeline — every step happens in order, every step matters.</p>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num s1">1</div>
+        <div class="step-body">
+          <h3>It builds a full picture of the doctor</h3>
+          <p>The system pulls together everything it knows: the doctor's specialty, which hospital they work at, how many patients they see, when they were last contacted, how they responded (did they open the email? attend the webinar? click through?), and what they prefer. This becomes a "context snapshot" for the AI to work with.</p>
+          <span class="step-tag tag-blue">Data Assembly</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num s2">2</div>
+        <div class="step-body">
+          <h3>It checks all the rules — before anything else</h3>
+          <p>This is the most important step, and it happens <em>before</em> the AI even gets involved. A dedicated rules engine checks: Has this doctor opted out? Are they in a compliance blackout? Were they contacted too recently? What channels are they allowed to be reached on? If any hard rule is violated, the system immediately says "Do Not Contact" and explains why. No AI guess-work on compliance — it's rule-based and deterministic.</p>
+          <span class="step-tag tag-purple">Rules Engine — Compliance First</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num s3">3</div>
+        <div class="step-body">
+          <h3>It finds the most relevant approved content</h3>
+          <p>The company has a library of pre-approved materials — clinical study summaries, patient guides, webinar invites, product overviews. The system looks at the doctor's therapy area (e.g., HIV, Cardiovascular, Endocrinology) and their preferred channel (email, phone, in-person), then retrieves the top 3–4 most relevant approved assets. Crucially, it can only use approved content — nothing unapproved ever gets recommended.</p>
+          <span class="step-tag tag-teal">Content Retrieval — Approved Assets Only</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num s4">4</div>
+        <div class="step-body">
+          <h3>The AI reasons through everything and makes a recommendation</h3>
+          <p>Now — and only now — does the AI (powered by Azure OpenAI GPT-4.1) get involved. It receives the doctor's full context, the rules engine output, and the retrieved content. It then produces: a specific recommended action (e.g., "Send Email"), a priority level, the right timing, which content piece to use, a draft email or call plan personalised to that doctor, a clear rationale explaining why, and a transparent list of assumptions it made.</p>
+          <span class="step-tag tag-amber">AI Reasoning — GPT-4.1</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num s5">5</div>
+        <div class="step-body">
+          <h3>The rep sees it all in one clean screen — and can act immediately</h3>
+          <p>Everything surfaces in a beautiful interface: the doctor's profile and engagement history on the left, the AI recommendation on the right. The rep can read the rationale, review the draft message, and copy it — all without leaving the screen. The whole process from click to recommendation takes about 5–10 seconds.</p>
+          <span class="step-tag tag-green">Frontend — React App</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── THE 4 SCENARIOS ── -->
+<section>
+  <div class="container">
+    <div class="section-label">Demo Scenarios Built In</div>
+    <h2>Four real-world situations the system handles.</h2>
+    <p class="lead">We designed 4 distinct scenarios to showcase the full range of the system's intelligence — from obvious outreach to knowing when to hold back.</p>
+
+    <div class="scenarios">
+      <div class="scenario sc1">
+        <h3>Digitally Engaged HCP</h3>
+        <p>A doctor who opens emails, attends webinars, and clicks on content. The system identifies the momentum and recommends a targeted follow-up with the most relevant clinical asset.</p>
+      </div>
+      <div class="scenario sc2">
+        <h3>Low / Churned HCP</h3>
+        <p>A doctor who hasn't engaged in 7+ months. The system recommends a gentle re-engagement rather than a hard sales push — right tone, right content, right timing.</p>
+      </div>
+      <div class="scenario sc3">
+        <h3>F2F Preference HCP</h3>
+        <p>A doctor who ignores every email but responds to in-person meetings. The system overrides the default email approach and recommends a face-to-face meeting with a call prep guide.</p>
+      </div>
+      <div class="scenario sc4">
+        <h3>Compliance Blackout</h3>
+        <p>A doctor flagged after an adverse event report. The system hard-blocks all outreach before the AI even runs — no guess-work, no risk. Compliance rules always win.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHAT MAKES IT SMART ── -->
+<section>
+  <div class="container">
+    <div class="section-label">What Makes This Different</div>
+    <h2>Three design decisions that set this apart.</h2>
+
+    <div class="highlights">
+      <div class="highlight">
+        <div class="highlight-icon">🛡️</div>
+        <h3>Rules run before AI — always</h3>
+        <p>Most AI products let the model decide everything. We deliberately separate compliance logic from AI reasoning. Hard rules are code, not prompts. An AI can hallucinate; a rule cannot.</p>
+      </div>
+      <div class="highlight">
+        <div class="highlight-icon">🤫</div>
+        <h3>Sometimes the right answer is "wait"</h3>
+        <p>The system is designed to recommend inaction when inaction is correct. A churned doctor, an over-contacted doctor, a recently met doctor — in each case, the AI may say "don't reach out yet." That restraint is a feature, not a bug.</p>
+      </div>
+      <div class="highlight">
+        <div class="highlight-icon">🔍</div>
+        <h3>Transparent reasoning, always</h3>
+        <p>Every recommendation comes with a rationale, a list of assumptions the AI made, and a list of data it didn't have. The rep always knows why — and can push back intelligently.</p>
+      </div>
+      <div class="highlight">
+        <div class="highlight-icon">📋</div>
+        <h3>Only approved content, ever</h3>
+        <p>In pharma, every piece of communication must go through medical-legal review. The system only retrieves pre-approved assets from the content library. The AI never invents content or suggests unapproved material.</p>
+      </div>
+      <div class="highlight">
+        <div class="highlight-icon">🏥</div>
+        <h3>Clinically grounded data</h3>
+        <p>The 25 synthetic HCPs span real therapy areas Avegen works in — HIV, Cardiovascular, Oncology, Endocrinology, Maternal Health. The profiles reflect how real HCPs actually behave, not generic mock data.</p>
+      </div>
+      <div class="highlight">
+        <div class="highlight-icon">⚡</div>
+        <h3>Built to be practical</h3>
+        <p>No over-engineering. No machine learning model. No complex infrastructure. A lean rules engine + content matching + a single well-designed AI prompt. Simple, explainable, and production-worthy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TECH STACK ── -->
+<section>
+  <div class="container">
+    <div class="section-label">What It's Built With</div>
+    <h2>A lean, modern stack — nothing unnecessary.</h2>
+    <p class="lead">Every technology choice was made for a reason. Here's what's under the hood and why.</p>
+
+    <div class="stack-grid">
+      <div class="stack-card">
+        <div class="stack-label">Frontend</div>
+        <div class="stack-name">React</div>
+        <div class="stack-why">Fast to build, easy to demo live, looks great in a browser presentation.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-label">Backend</div>
+        <div class="stack-name">FastAPI (Python)</div>
+        <div class="stack-why">Lightweight server that connects the frontend to the AI and data. Python is the natural language for AI work.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-label">AI Model</div>
+        <div class="stack-name">Azure OpenAI GPT-4.1</div>
+        <div class="stack-why">The most capable model available via Azure — enterprise-grade, compliant, and produces structured, reliable outputs.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-label">Styling</div>
+        <div class="stack-name">Tailwind CSS</div>
+        <div class="stack-why">Builds beautiful, consistent interfaces without writing a single line of custom CSS from scratch.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-label">Data</div>
+        <div class="stack-name">JSON Files</div>
+        <div class="stack-why">Transparent, readable, and inspectable. No database needed for a prototype — the data is the demo.</div>
+      </div>
+      <div class="stack-card">
+        <div class="stack-label">Content Matching</div>
+        <div class="stack-name">Tag-based Retrieval</div>
+        <div class="stack-why">Simple keyword and therapy-area matching to find relevant content. Transparent, explainable, no black-box.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── THE BIG PICTURE ── -->
+<section>
+  <div class="container">
+    <div class="section-label">The Bigger Picture</div>
+    <h2>This is a prototype. Here's what it could become.</h2>
+    <p class="lead">We built this in 2 days as a focused proof-of-concept. The thinking behind it, however, is production-grade. Here's the natural evolution:</p>
+
+    <div class="analogy">
+      <div class="analogy-label">The Vision</div>
+      <p>
+        Connect this to a real CRM like Salesforce or Veeva — and now every rep in the country has an intelligent co-pilot before every interaction.<br /><br />
+        Connect it to real engagement data from emails, portals, and events — and the recommendations get sharper with every interaction.<br /><br />
+        <strong>Plug it into Avegen's HealthMachine platform</strong> — and this becomes the engagement intelligence layer for every pharma company that builds digital health solutions on HealthMachine.
+        <br /><br />
+        That's the unlock. Not just a prototype — a new product capability.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>Built for the <strong>Avegen interview assignment</strong> · HCP Engagement Copilot · March 2026</p>
+  <p style="margin-top:8px;">Rules-first · AI-assisted · Compliance-aware · Clinically grounded</p>
+</footer>
+
+</body>
+</html>
