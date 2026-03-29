@@ -21,13 +21,22 @@
 
   body {
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--navy);
+    background: #060e1e;
     color: #fff;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .deck { width: 100vw; height: 100vh; position: relative; }
+  .deck {
+    width: 1440px;
+    height: 900px;
+    position: relative;
+    flex-shrink: 0;
+    transform-origin: center center;
+  }
   .slide {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
@@ -1165,6 +1174,17 @@
   })
 
   show(0)
+
+  // Auto-scale deck to always fit the viewport (like PowerPoint)
+  function scalePresentation() {
+    const deck = document.getElementById('deck')
+    const scaleX = window.innerWidth  / 1440
+    const scaleY = window.innerHeight / 900
+    const scale  = Math.min(scaleX, scaleY)
+    deck.style.transform = `scale(${scale})`
+  }
+  window.addEventListener('resize', scalePresentation)
+  scalePresentation()
 </script>
 </body>
 </html>
