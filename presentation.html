@@ -23,19 +23,16 @@
     font-family: 'Segoe UI', system-ui, sans-serif;
     background: #060e1e;
     color: #fff;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .deck {
     width: 1440px;
     height: 900px;
     position: relative;
-    flex-shrink: 0;
-    transform-origin: center center;
+    transform-origin: top left;
   }
   .slide {
     position: absolute; inset: 0;
@@ -1169,6 +1166,7 @@
     slides[cur].classList.add('active')
     document.getElementById('counter').textContent = `${cur + 1} / ${total}`
     document.getElementById('progress').style.width = `${((cur + 1) / total) * 100}%`
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   function go(d) { show(cur + d) }
@@ -1181,14 +1179,14 @@
 
   show(0)
 
-  // Auto-scale deck to always fit the viewport (like PowerPoint)
+  // Scale deck to fill full screen width; allow vertical scroll if screen is short
   function scalePresentation() {
-    const deck = document.getElementById('deck')
-    // Scale by width — fills the full screen horizontally, no side bars
+    const deck  = document.getElementById('deck')
     const scale = window.innerWidth / 1440
     deck.style.transform = `scale(${scale})`
-    // Adjust body height so vertical centering tracks the scaled deck height
+    // Tell the body how tall the scaled deck is so the scrollbar appears correctly
     document.body.style.height = (900 * scale) + 'px'
+    // Scroll back to top whenever the slide changes
   }
   window.addEventListener('resize', scalePresentation)
   scalePresentation()
