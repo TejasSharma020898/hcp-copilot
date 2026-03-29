@@ -86,12 +86,12 @@
   .eyebrow.red   { color: #F87171; }
   .eyebrow.purple{ color: #C4B5FD; }
 
-  h1 { font-size: 50px; font-weight: 800; line-height: 1.08; letter-spacing: -.02em; }
-  h2 { font-size: 34px; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
-  h3 { font-size: 22px; font-weight: 700; line-height: 1.25; }
-  h4 { font-size: 15px; font-weight: 700; }
-  p  { font-size: 15px; line-height: 1.65; }
-  .large { font-size: 18px; line-height: 1.55; }
+  h1 { font-size: 54px; font-weight: 800; line-height: 1.08; letter-spacing: -.02em; }
+  h2 { font-size: 40px; font-weight: 700; line-height: 1.15; letter-spacing: -.01em; }
+  h3 { font-size: 26px; font-weight: 700; line-height: 1.25; }
+  h4 { font-size: 16px; font-weight: 700; }
+  p  { font-size: 16px; line-height: 1.7; }
+  .large { font-size: 20px; line-height: 1.6; }
   .muted { opacity: .55; }
   .text-blue   { color: #60A5FA; }
   .text-teal   { color: #2DD4BF; }
@@ -101,7 +101,12 @@
   .text-purple { color: #C4B5FD; }
 
   .row   { display: flex; gap: 24px; }
-  .col   { display: flex; flex-direction: column; gap: 12px; }
+  .col   { display: flex; flex-direction: column; gap: 14px; }
+
+  /* Make the main content row fill remaining slide height, cards stretch evenly */
+  .slide > .row { flex: 1; align-items: stretch; }
+  .slide > .row > .col { justify-content: stretch; }
+  .slide > .row > .col > .card { flex: 1; }
   .flex1 { flex: 1; }
   .mt8   { margin-top: 8px; }
   .mt16  { margin-top: 16px; }
@@ -112,7 +117,7 @@
   .card {
     background: rgba(255,255,255,.07);
     border: 1px solid rgba(255,255,255,.1);
-    border-radius: 14px; padding: 20px 22px;
+    border-radius: 14px; padding: 26px 28px;
   }
   .card.light { background: #fff; border: 1px solid #E2E8F0; color: #0f172a; }
   .card.blue-border  { border-color: rgba(96,165,250,.4);  background: rgba(37,99,235,.12); }
@@ -134,16 +139,17 @@
   .badge.red    { background: rgba(220,38,38,.25);  color: #FCA5A5; border: 1px solid rgba(248,113,113,.3); }
   .badge.purple { background: rgba(124,58,237,.25); color: #C4B5FD; border: 1px solid rgba(167,139,250,.3); }
 
-  .pipeline { display: flex; align-items: center; gap: 0; margin-top: 28px; }
+  .pipeline { display: flex; align-items: stretch; gap: 0; margin-top: 28px; }
   .pipe-step {
-    flex: 1; text-align: center; padding: 18px 12px;
+    flex: 1; text-align: center; padding: 36px 16px;
     background: rgba(255,255,255,.06);
     border: 1px solid rgba(255,255,255,.1);
     border-radius: 12px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .pipe-step .icon { font-size: 28px; display: block; margin-bottom: 8px; }
-  .pipe-step h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-  .pipe-step p { font-size: 11px; opacity: .6; }
+  .pipe-step .icon { font-size: 40px; display: block; margin-bottom: 14px; }
+  .pipe-step h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .pipe-step p { font-size: 13px; opacity: .6; }
   .pipe-arrow {
     width: 36px; flex-shrink: 0;
     text-align: center; font-size: 20px; color: rgba(255,255,255,.3);
@@ -151,11 +157,11 @@
 
   .rule-item {
     display: flex; align-items: flex-start; gap: 12px;
-    padding: 12px 16px;
+    padding: 16px 18px;
     background: rgba(255,255,255,.05);
     border-left: 3px solid;
     border-radius: 0 8px 8px 0;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
   .rule-item .num {
     width: 24px; height: 24px; border-radius: 50%;
@@ -173,8 +179,8 @@
 
   .check-list { list-style: none; }
   .check-list li {
-    padding: 6px 0 6px 28px; position: relative;
-    font-size: 14px; line-height: 1.5;
+    padding: 9px 0 9px 28px; position: relative;
+    font-size: 15px; line-height: 1.55;
     border-bottom: 1px solid rgba(255,255,255,.05);
   }
   .check-list li::before {
